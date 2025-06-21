@@ -15,7 +15,7 @@ import com.sterling.Interfaces.UserDAOInterface;
 public class UserDAO implements UserDAOInterface {
     @Override
     public void addUser(User user){
-        String sql = "INSERT INTO users (email, username, password_hash, first_name, last_name, age, start_weight, start_body_fat_percentage, feet, inches) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (email, username, password_hash, first_name, last_name, age, start_weight, start_body_fat_percentage, feet, inches, home_gym, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try(Connection conn = DBConnection.getConnection()){
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -30,6 +30,9 @@ public class UserDAO implements UserDAOInterface {
             ps.setFloat(8, user.getStartBodyFatPercentage());
             ps.setInt(9, user.getHeightFeet());
             ps.setInt(10, user.getHeightInches());
+            ps.setString(11,user.getHomeGym());
+            ps.setDouble(12, user.getLatitude());
+            ps.setDouble(13, user.getLongitude());
 
             ps.executeUpdate();
         }
@@ -64,7 +67,10 @@ public class UserDAO implements UserDAOInterface {
                     rs.getFloat("current_body_fat_percentage"),
                     rs.getTimestamp("created_on"),
                     rs.getString("role"),
-                    rs.getInt("trainer_id")
+                    rs.getInt("trainer_id"),
+                    rs.getString("home_gym"),
+                    rs.getDouble("latitude"),
+                    rs.getDouble("longitude")
                 );
             }
         }
@@ -100,7 +106,10 @@ public class UserDAO implements UserDAOInterface {
                     rs.getFloat("current_body_fat_percentage"),
                     rs.getTimestamp("created_on"),
                     rs.getString("role"),
-                    rs.getInt("trainer_id")
+                    rs.getInt("trainer_id"),
+                    rs.getString("home_gmy"),
+                    rs.getDouble("latitude"),
+                    rs.getDouble("longitude")
                 );
             }
         }
@@ -136,7 +145,10 @@ public class UserDAO implements UserDAOInterface {
                     rs.getFloat("current_body_fat_percentage"),
                     rs.getTimestamp("created_on"),
                     rs.getString("role"),
-                    rs.getInt("trainer_id")
+                    rs.getInt("trainer_id"),
+                    rs.getString("home_gym"),
+                    rs.getDouble("latitude"),
+                    rs.getDouble("longitude")
                 );
             }
         }
@@ -157,24 +169,28 @@ public class UserDAO implements UserDAOInterface {
 
             while(rs.next()){
                 users.add (
-                    new User(
-                    rs.getInt("id"),
-                    rs.getString("email"),
-                    rs.getString("username"),
-                    rs.getString("password_hash"),
-                    rs.getString("first_name"),
-                    rs.getString("last_name"),
-                    rs.getInt("age"),
-                    rs.getFloat("start_weight"),
-                    rs.getFloat("start_body_fat_percentage"),
-                    rs.getInt("feet"),
-                    rs.getInt("inches"),
-                    rs.getFloat("current_weight"),
-                    rs.getFloat("current_body_fat_percentage"),
-                    rs.getTimestamp("created_on"),
-                    rs.getString("role"),
-                    rs.getInt("trainer_id")
-                ));
+                        new User(
+                        rs.getInt("id"),
+                        rs.getString("email"),
+                        rs.getString("username"),
+                        rs.getString("password_hash"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getInt("age"),
+                        rs.getFloat("start_weight"),
+                        rs.getFloat("start_body_fat_percentage"),
+                        rs.getInt("feet"),
+                        rs.getInt("inches"),
+                        rs.getFloat("current_weight"),
+                        rs.getFloat("current_body_fat_percentage"),
+                        rs.getTimestamp("created_on"),
+                        rs.getString("role"),
+                        rs.getInt("trainer_id"),
+                        rs.getString("home_gym"),
+                        rs.getDouble("latitude"),
+                        rs.getDouble("longitude")
+                    )
+                );
             }
         }
         catch(SQLException e){
@@ -185,7 +201,7 @@ public class UserDAO implements UserDAOInterface {
 
     @Override
     public boolean updateUser(User user){
-        String sql = "UPDATE users SET email = ?, username = ?, password_hash = ?, first_name = ?, last_name = ?, age = ?, start_weight = ?, start_body_fat_percentage = ?, feet = ?, inches = ?, current_weight = ?, current_body_fat_percentage = ? WHERE id = ?";
+        String sql = "UPDATE users SET email = ?, username = ?, password_hash = ?, first_name = ?, last_name = ?, age = ?, start_weight = ?, start_body_fat_percentage = ?, feet = ?, inches = ?, current_weight = ?, current_body_fat_percentage = ?, home_gym = ?, latitude = ?, longitude = ? WHERE id = ?";
         boolean updated = false;
 
         try(Connection conn = DBConnection.getConnection()){
@@ -204,6 +220,9 @@ public class UserDAO implements UserDAOInterface {
             ps.setFloat(11, user.getCurrentWeight());
             ps.setFloat(12, user.getCurrentBodyFatPercentage());
             ps.setInt(13, user.getId());
+            ps.setString(14, user.getHomeGym());
+            ps.setDouble(15, user.getLatitude());
+            ps.setDouble(16, user.getLongitude());
 
             int rowsAffected = ps.executeUpdate();
             updated = rowsAffected > 0;
@@ -303,7 +322,10 @@ public class UserDAO implements UserDAOInterface {
                         rs.getFloat("current_body_fat_percentage"),
                         rs.getTimestamp("created_on"),
                         rs.getString("role"),
-                        rs.getInt("trainer_id")
+                        rs.getInt("trainer_id"),
+                        rs.getString("home_gym"),
+                        rs.getDouble("latitude"),
+                        rs.getDouble("longitude")
                     )
                 );
             }

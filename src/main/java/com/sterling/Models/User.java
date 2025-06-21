@@ -34,13 +34,18 @@ public class User {
     private String role;
     @JsonProperty("trainer_id")
     private Integer trainerId;
+    @JsonProperty("home_gym")
+    private String homeGym;
+    private Double latitude;
+    private Double longitude;
 
     public User() {
     }
 
-    public User(int id, String email, String username, String password, String firstName, String lastName, int age, float startWeight,
-            float startBodyFatPercentage, int heightFeet, int heightInches, float currentWeight,
-            float currentBodyFatPercentage, Timestamp createdOn, String role, int trainerId) {
+    public User(int id, String email, String username, String password, String firstName, String lastName, int age,
+            float startWeight, float startBodyFatPercentage, int heightFeet, int heightInches, float currentWeight,
+            float currentBodyFatPercentage, Timestamp createdOn, String role, Integer trainerId, String homeGym,
+            Double latitude, Double longitude) {
         this.id = id;
         this.email = email;
         this.username = username;
@@ -57,6 +62,9 @@ public class User {
         this.createdOn = createdOn;
         this.role = role;
         this.trainerId = trainerId;
+        this.homeGym = homeGym;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public int getId() {
@@ -185,5 +193,29 @@ public class User {
 
     public void setTrainerId(Integer trainerId) {
         this.trainerId = trainerId;
+    }
+
+    public String getHomeGym() {
+        return homeGym;
+    }
+
+    public void setHomeGym(String homeGym) {
+        this.homeGym = homeGym;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 }

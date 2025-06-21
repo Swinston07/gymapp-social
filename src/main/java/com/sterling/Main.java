@@ -73,6 +73,7 @@ public class Main {
         app.get("/users", userController::getAllUsers);
         app.get("/users/{id}", userController::getUserById);
         app.get("/trainers/{trainerId}/clients", userController::getClientsByTrainerId);
+        app.get("/users/{id}/nearby-gyms", userController::getNearByGyms);
         app.put("/users/{id}", userController::updateUser);
         app.put("/users/{id}/role", userController::updateUserRole);
         app.put("/trainers/{trainerId}/clients/{clientId}", userController::assignClientToTrainer);

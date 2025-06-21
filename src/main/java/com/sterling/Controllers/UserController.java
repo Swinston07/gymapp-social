@@ -20,6 +20,14 @@ public class UserController {
         User user = ctx.bodyAsClass(User.class);
         boolean success = userService.registerUser(user);
 
+        user.setHomeGym(ctx.formParam("homeGym"));
+        String latStr = ctx.formParam("latitude");
+        String lonStr = ctx.formParam("longitude");
+
+        if(latStr != null) user.setLatitude(Double.parseDouble(latStr));
+        if(lonStr != null) user.setLongitude(Double.parseDouble(lonStr));
+
+
         if(success)
             ctx.status(201).result("User registered successfully");
         else
@@ -71,7 +79,14 @@ public class UserController {
     public void updateUser(Context ctx){
         int id = Integer.parseInt(ctx.pathParam("id"));
         User updatedUser = ctx.bodyAsClass(User.class);
+        updatedUser.setHomeGym(ctx.formParam("homeGym"));
+        String latStr = ctx.formParam("latitude");
+        String lonStr = ctx.formParam("longitude");
+
         updatedUser.setId(id);
+
+        if(latStr != null) updatedUser.setLatitude(Double.parseDouble(latStr));
+        if(lonStr != null) updatedUser.setLongitude(Double.parseDouble(lonStr));
 
         boolean success = userService.updateUser(updatedUser);
 
@@ -178,6 +193,29 @@ public class UserController {
         }
         else{
             ctx.json(clients);
+        }
+    }
+
+    public void getNearByGyms(Context ctx){
+        try {
+            int userId = Integer.parseInt(ctx.pathParam("id"));
+            User user = userService.getUserById(userId);
+            
+            if(user == null){
+                ctx.status(404).result("User not found");
+                return;
+            }
+
+            if(user.getLatitude() == null || user.getLongitude() == null){
+                ctx.status(400).result("User does not have a location set");
+                return;
+            }
+
+            String gymResults = userService.getNearByGyms(user.getLatitude(), user.getLongitude());
+            ctx.status(200).result(gymResults);
+        } catch (Exception e) {
+            ctx.status(500).result("Failed to retreive any nearby gyms");
+            e.printStackTrace();
         }
     }
 }
