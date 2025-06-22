@@ -334,4 +334,23 @@ public class UserDAO implements UserDAOInterface {
         }
         return clientList;
     }
+
+    @Override
+    public boolean updateHomeGym(int userId, String homeGym, Double latitude, Double longitude){
+        String sql = "UPDATE users SET home_gym = ?, latitude = ?, longitude = ? WHERE id = ?";
+
+        try(Connection conn = DBConnection.getConnection()){
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setString(1, homeGym);
+            ps.setDouble(2, latitude);
+            ps.setDouble(3, longitude);
+            ps.setInt(4, userId);
+
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

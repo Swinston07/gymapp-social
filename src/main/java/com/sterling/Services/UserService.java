@@ -118,4 +118,8 @@ public class UserService {
             return "{\"error\":\"Failed to fetch gyms\"}";
         }
     }
+
+    public boolean updateHomeGym(int userId, String homeGym, Double latitude, Double longitude){
+        return userDao.updateHomeGym(userId, homeGym, latitude, longitude);
+    }
 }

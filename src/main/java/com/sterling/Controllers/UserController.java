@@ -218,4 +218,28 @@ public class UserController {
             e.printStackTrace();
         }
     }
+
+    public void updateHomeGym(Context ctx){
+        int userId = ctx.attribute("userId");
+        int requesterid = Integer.parseInt(ctx.pathParam("id"));
+
+        if(requesterid != userId){
+            ctx.status(404).result("Unauthorized to updat another user;s location");
+            return;
+        }
+        
+        Map<String, Object> body = ctx.bodyAsClass(Map.class);
+
+        String homeGym = (String) body.get("home_gym");
+        Double lat = (Double) body.get("latitude");
+        Double lon = (Double) body.get("longitude");
+        
+        boolean success = userService.updateHomeGym(userId, homeGym, lat, lon);
+
+        if(success) {
+            ctx.status(200).result("Home gym updated");
+        } else {
+            ctx.status(400).result("Failed to updated Home gym");
+        }
+    }
 }
