@@ -38,6 +38,8 @@ public class User {
     private String homeGym;
     private Double latitude;
     private Double longitude;
+    @JsonProperty("is_working_out")
+    private boolean isWorkingOut;
 
     public User() {
     }
@@ -45,7 +47,7 @@ public class User {
     public User(int id, String email, String username, String password, String firstName, String lastName, int age,
             float startWeight, float startBodyFatPercentage, int heightFeet, int heightInches, float currentWeight,
             float currentBodyFatPercentage, Timestamp createdOn, String role, Integer trainerId, String homeGym,
-            Double latitude, Double longitude) {
+            Double latitude, Double longitude, boolean isWorkingOut) {
         this.id = id;
         this.email = email;
         this.username = username;
@@ -65,6 +67,7 @@ public class User {
         this.homeGym = homeGym;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.isWorkingOut = isWorkingOut;
     }
 
     public int getId() {
@@ -218,4 +221,14 @@ public class User {
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
+
+    public boolean getIsWorkingOut() {
+        return isWorkingOut;
+    }
+
+    public void setIsWorkingOut(boolean isWorkingOut) {
+        this.isWorkingOut = isWorkingOut;
+    }
+
+    
 }

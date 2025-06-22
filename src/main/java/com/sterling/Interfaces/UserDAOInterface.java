@@ -16,4 +16,5 @@ public interface UserDAOInterface {
     boolean assignClientToTrainer(int clientId, int trainerId); //Admin and Trainer only
     List<User> getClientsByTrainerId(int trainerId);           //Trainer Specific
     boolean updateHomeGym(int userId, String homeGym, Double latitude, Double longitude);
+    boolean toggleWorkoutStatus(int userId);
 }

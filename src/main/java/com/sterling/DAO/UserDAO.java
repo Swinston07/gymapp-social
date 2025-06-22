@@ -70,7 +70,8 @@ public class UserDAO implements UserDAOInterface {
                     rs.getInt("trainer_id"),
                     rs.getString("home_gym"),
                     rs.getDouble("latitude"),
-                    rs.getDouble("longitude")
+                    rs.getDouble("longitude"),
+                    rs.getBoolean("is_working_out")
                 );
             }
         }
@@ -109,7 +110,8 @@ public class UserDAO implements UserDAOInterface {
                     rs.getInt("trainer_id"),
                     rs.getString("home_gmy"),
                     rs.getDouble("latitude"),
-                    rs.getDouble("longitude")
+                    rs.getDouble("longitude"),
+                    rs.getBoolean("is_working_out")
                 );
             }
         }
@@ -148,7 +150,8 @@ public class UserDAO implements UserDAOInterface {
                     rs.getInt("trainer_id"),
                     rs.getString("home_gym"),
                     rs.getDouble("latitude"),
-                    rs.getDouble("longitude")
+                    rs.getDouble("longitude"),
+                    rs.getBoolean("is_working_out")
                 );
             }
         }
@@ -188,7 +191,8 @@ public class UserDAO implements UserDAOInterface {
                         rs.getInt("trainer_id"),
                         rs.getString("home_gym"),
                         rs.getDouble("latitude"),
-                        rs.getDouble("longitude")
+                        rs.getDouble("longitude"),
+                        rs.getBoolean("is_working_out")
                     )
                 );
             }
@@ -325,7 +329,8 @@ public class UserDAO implements UserDAOInterface {
                         rs.getInt("trainer_id"),
                         rs.getString("home_gym"),
                         rs.getDouble("latitude"),
-                        rs.getDouble("longitude")
+                        rs.getDouble("longitude"),
+                        rs.getBoolean("is_working_out")
                     )
                 );
             }
@@ -346,6 +351,22 @@ public class UserDAO implements UserDAOInterface {
             ps.setDouble(2, latitude);
             ps.setDouble(3, longitude);
             ps.setInt(4, userId);
+
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean toggleWorkoutStatus(int userId){
+        String sql = "UPDATE users SET is_working_out = NOT is_working_out WHERE id = ?";
+
+        try (Connection conn = DBConnection.getConnection()){
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setInt(1, userId);
 
             return ps.executeUpdate() > 0;
         } catch (SQLException e){

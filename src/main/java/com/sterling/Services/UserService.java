@@ -122,4 +122,8 @@ public class UserService {
     public boolean updateHomeGym(int userId, String homeGym, Double latitude, Double longitude){
         return userDao.updateHomeGym(userId, homeGym, latitude, longitude);
     }
+
+    public boolean toggleWorkoutStatus(int userId){
+        return userDao.toggleWorkoutStatus(userId);
+    }
 }

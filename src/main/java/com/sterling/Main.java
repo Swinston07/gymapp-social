@@ -77,6 +77,7 @@ public class Main {
         app.put("/users/{id}", userController::updateUser);
         app.put("/users/{id}/role", userController::updateUserRole);
         app.put("users/{id}/update-location", userController::updateHomeGym);
+        app.put("/users/{id}/toggle-workout", userController::toggleWorkoutStatus);
         app.put("/trainers/{trainerId}/clients/{clientId}", userController::assignClientToTrainer);
         app.delete("/users/{id}", userController::deleteUser);
 

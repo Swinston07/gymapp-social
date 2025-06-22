@@ -220,10 +220,10 @@ public class UserController {
     }
 
     public void updateHomeGym(Context ctx){
-        int userId = ctx.attribute("userId");
-        int requesterid = Integer.parseInt(ctx.pathParam("id"));
+        int requesterId = ctx.attribute("userId");
+        int userId = Integer.parseInt(ctx.pathParam("id"));
 
-        if(requesterid != userId){
+        if(requesterId != userId){
             ctx.status(404).result("Unauthorized to updat another user;s location");
             return;
         }
@@ -233,7 +233,7 @@ public class UserController {
         String homeGym = (String) body.get("home_gym");
         Double lat = (Double) body.get("latitude");
         Double lon = (Double) body.get("longitude");
-        
+
         boolean success = userService.updateHomeGym(userId, homeGym, lat, lon);
 
         if(success) {
@@ -241,5 +241,24 @@ public class UserController {
         } else {
             ctx.status(400).result("Failed to updated Home gym");
         }
+    }
+
+    public void toggleWorkoutStatus(Context ctx){
+        int userId = Integer.parseInt(ctx.pathParam("id"));
+        int requesterId = ctx.attribute("userId");
+
+        if(requesterId != userId) {
+            ctx.status(403).result("Not authroized to update another user's workout status");
+            return;
+        }
+
+        boolean success = userService.toggleWorkoutStatus(userId);
+
+        if(success){
+            ctx.status(200).result("Workout status toggles successufully");
+        } else{
+            ctx.status(500).result("Failed to toggle workout status");
+        }
+
     }
 }
