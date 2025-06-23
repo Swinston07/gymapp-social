@@ -374,4 +374,57 @@ public class UserDAO implements UserDAOInterface {
             return false;
         }
     }
+
+    @Override
+    public List<User> findMatchingUsers(String homeGym, String role, int userId){
+        StringBuilder sql = new StringBuilder("SELECT * FROM users WHERE home_gym = ? AND id != ?");
+        List<User> matches = new ArrayList<>();
+
+        if(role != null){
+            sql.append(" AND role = ?");
+        }
+
+        try (Connection conn = DBConnection.getConnection()){
+            PreparedStatement ps = conn.prepareStatement(sql.toString());
+
+            ps.setString(1, homeGym);
+            ps.setInt(2, userId);
+
+            if(role != null){
+                ps.setString(3, role);
+            }
+
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+                matches.add(
+                    new User(
+                        rs.getInt("id"),
+                        rs.getString("email"),
+                        rs.getString("username"),
+                        rs.getString("password_hash"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getInt("age"),
+                        rs.getFloat("start_weight"),
+                        rs.getFloat("start_body_fat_percentage"),
+                        rs.getInt("feet"),
+                        rs.getInt("inches"),
+                        rs.getFloat("current_weight"),
+                        rs.getFloat("current_body_fat_percentage"),
+                        rs.getTimestamp("created_on"),
+                        rs.getString("role"),
+                        rs.getInt("trainer_id"),
+                        rs.getString("home_gym"),
+                        rs.getDouble("latitude"),
+                        rs.getDouble("longitude"),
+                        rs.getBoolean("is_working_out")
+                    )
+                );
+            }
+        } catch (SQLException e){
+            e.printStackTrace();;
+        }
+        return matches;
+    }
 }

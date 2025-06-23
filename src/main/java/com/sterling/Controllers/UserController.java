@@ -259,6 +259,18 @@ public class UserController {
         } else{
             ctx.status(500).result("Failed to toggle workout status");
         }
+    }
 
+    public void findMatchingUsers(Context ctx){
+        int requesterId = ctx.attribute("userId");
+        int userId = Integer.parseInt(ctx.pathParam("id"));
+        String role = ctx.queryParam("role");
+
+        if(requesterId != userId){
+            ctx.status(403).result("unauthorized");
+        }
+
+        List<User> matches = userService.findMatchingUsers(role, userId);
+        ctx.json(matches);
     }
 }

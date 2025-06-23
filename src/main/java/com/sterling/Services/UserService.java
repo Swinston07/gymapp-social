@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.sterling.Interfaces.UserDAOInterface;
@@ -125,5 +126,13 @@ public class UserService {
 
     public boolean toggleWorkoutStatus(int userId){
         return userDao.toggleWorkoutStatus(userId);
+    }
+
+    public List<User> findMatchingUsers(String role, int userId){
+        User requester = userDao.getUserById(userId); 
+
+        if(requester == null || requester.getHomeGym() == null) return new ArrayList<>();
+
+        return userDao.findMatchingUsers(requester.getHomeGym(), role, userId);
     }
 }
