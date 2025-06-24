@@ -199,6 +199,8 @@ public class UserController {
     public void getNearByGyms(Context ctx){
         try {
             int userId = Integer.parseInt(ctx.pathParam("id"));
+            double latitude = Double.parseDouble(ctx.queryParam("latitude"));
+            double longitude = Double.parseDouble(ctx.queryParam("longitude"));
             User user = userService.getUserById(userId);
             
             if(user == null){
@@ -206,15 +208,10 @@ public class UserController {
                 return;
             }
 
-            if(user.getLatitude() == null || user.getLongitude() == null){
-                ctx.status(400).result("User does not have a location set");
-                return;
-            }
-
-            String gymResults = userService.getNearByGyms(user.getLatitude(), user.getLongitude());
+            String gymResults = userService.getNearByGyms(latitude, longitude);
             ctx.status(200).result(gymResults);
         } catch (Exception e) {
-            ctx.status(500).result("Failed to retreive any nearby gyms");
+            ctx.status(500).result("Failed to retrieve any nearby gyms");
             e.printStackTrace();
         }
     }
