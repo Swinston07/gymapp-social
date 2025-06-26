@@ -427,4 +427,99 @@ public class UserDAO implements UserDAOInterface {
         }
         return matches;
     }
+
+    @Override
+    public List<User> findUsersByHomeGym(String homeGym, int userId){
+        String sql = "SELECT * FROM users WHERE home_gym = ? AND id != ?";
+        List<User> userList = new ArrayList<>();
+
+        try(Connection conn = DBConnection.getConnection()){
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setString(1, homeGym);
+            ps.setInt(2, userId);
+
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+                userList.add(
+                    new User(
+                        rs.getInt("id"),
+                        rs.getString("email"),
+                        rs.getString("username"),
+                        rs.getString("password_hash"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getInt("age"),
+                        rs.getFloat("start_weight"),
+                        rs.getFloat("start_body_fat_percentage"),
+                        rs.getInt("feet"),
+                        rs.getInt("inches"),
+                        rs.getFloat("current_weight"),
+                        rs.getFloat("current_body_fat_percentage"),
+                        rs.getTimestamp("created_on"),
+                        rs.getString("role"),
+                        rs.getInt("trainer_id"),
+                        rs.getString("home_gym"),
+                        rs.getDouble("latitude"),
+                        rs.getDouble("longitude"),
+                        rs.getBoolean("is_working_out")
+                    )
+                );
+            }
+
+            return userList;
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public List<User> findUsersByHomeGymAndRole(String homeGym, String role, int userId){
+        String sql = "SELECT * FROM users WHERE home_gym = ? AND role = ? AND id != ?";
+        List<User> userList = new ArrayList<>();
+
+        try(Connection conn = DBConnection.getConnection()){
+            PreparedStatement ps = conn.prepareStatement(sql);
+            
+            ps.setString(1, homeGym);
+            ps.setString(2, role);
+            ps.setInt(3, userId);
+
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+                userList.add(
+                    new User(
+                        rs.getInt("id"),
+                        rs.getString("email"),
+                        rs.getString("username"),
+                        rs.getString("password_hash"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getInt("age"),
+                        rs.getFloat("start_weight"),
+                        rs.getFloat("start_body_fat_percentage"),
+                        rs.getInt("feet"),
+                        rs.getInt("inches"),
+                        rs.getFloat("current_weight"),
+                        rs.getFloat("current_body_fat_percentage"),
+                        rs.getTimestamp("created_on"),
+                        rs.getString("role"),
+                        rs.getInt("trainer_id"),
+                        rs.getString("home_gym"),
+                        rs.getDouble("latitude"),
+                        rs.getDouble("longitude"),
+                        rs.getBoolean("is_working_out")
+                    )
+                );
+            }
+
+            return userList;
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

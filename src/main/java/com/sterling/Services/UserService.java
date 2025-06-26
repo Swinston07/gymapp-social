@@ -128,11 +128,18 @@ public class UserService {
         return userDao.toggleWorkoutStatus(userId);
     }
 
-    public List<User> findMatchingUsers(String role, int userId){
+    public List<User> findUsersByHomeGymAndRole(String role, int userId){
         User requester = userDao.getUserById(userId); 
 
         if(requester == null || requester.getHomeGym() == null) return new ArrayList<>();
 
-        return userDao.findMatchingUsers(requester.getHomeGym(), role, userId);
+        return userDao.findUsersByHomeGymAndRole(requester.getHomeGym(), role, userId);
+    }
+
+    public List<User> findUsersByHomeGym(int userId){
+        User requester = userDao.getUserById(userId);
+
+        if(requester == null || requester.getHomeGym() == null) return new ArrayList<>();
+        return userDao.findUsersByHomeGym(requester.getHomeGym(), userId);
     }
 }

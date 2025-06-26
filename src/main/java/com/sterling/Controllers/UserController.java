@@ -1,5 +1,6 @@
 package com.sterling.Controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -258,16 +259,23 @@ public class UserController {
         }
     }
 
-    public void findMatchingUsers(Context ctx){
+    public void findUsersByHomeGym(Context ctx){
         int requesterId = ctx.attribute("userId");
         int userId = Integer.parseInt(ctx.pathParam("id"));
         String role = ctx.queryParam("role");
 
         if(requesterId != userId){
-            ctx.status(403).result("unauthorized");
+            ctx.status(403).result("Unauthorized");
         }
 
-        List<User> matches = userService.findMatchingUsers(role, userId);
-        ctx.json(matches);
+        List<User> matches = new ArrayList<>();
+
+        if(role != null) {
+            matches = userService.findUsersByHomeGymAndRole(role, userId);
+        }
+        else {
+            matches = userService.findUsersByHomeGym(userId);
+        }
+        ctx.status(200).json(matches);
     }
 }

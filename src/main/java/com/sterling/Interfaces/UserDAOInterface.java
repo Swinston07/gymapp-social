@@ -18,4 +18,6 @@ public interface UserDAOInterface {
     boolean updateHomeGym(int userId, String homeGym, Double latitude, Double longitude);
     boolean toggleWorkoutStatus(int userId);
     List<User> findMatchingUsers(String homeGym, String role, int userId);
+    List<User> findUsersByHomeGym(String homeGym, int userId);
+    List<User> findUsersByHomeGymAndRole(String homeGym, String role, int userId);
 }
