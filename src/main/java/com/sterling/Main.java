@@ -126,7 +126,7 @@ public class Main {
         app.delete("/progress/{userId}", userProgressController::deleteProgressByUserId);
 
         //Workoutinvite endpoints
-        app.post("/users/{id}/workout-invites", workoutInviteController::sendInvite);
+        app.post("/users/{id}/workout-invites/{recipientId}", workoutInviteController::sendInvite);
         app.get("/users/{id}/workout-invites", workoutInviteController::getInvitesForUser);
         app.put("/users/{id}/workout-invites/{inviteId}", workoutInviteController::updateInviteStatus);
     }

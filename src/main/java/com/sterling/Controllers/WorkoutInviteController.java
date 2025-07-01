@@ -20,6 +20,7 @@ public class WorkoutInviteController {
     public void sendInvite(Context ctx) {
         int requesterId = ctx.attribute("userId");
         int userId = Integer.parseInt(ctx.pathParam("id"));
+        int recipientId = Integer.parseInt(ctx.pathParam("recipientId"));
         WorkoutInvite invite = ctx.bodyAsClass(WorkoutInvite.class);
 
         if(requesterId != userId){
@@ -27,6 +28,8 @@ public class WorkoutInviteController {
             return;
         }
 
+        invite.setSenderId(userId);
+        invite.setRecipientId(recipientId);
         invite.setSentAt(Timestamp.from(Instant.now()));
         invite.setStatus("pending");
         workoutInviteService.sendInvite(invite);
