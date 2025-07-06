@@ -1,8 +1,6 @@
 package com.sterling.Interfaces;
 
 import java.util.List;
-
-import com.sterling.Models.GymBuddy;
 import com.sterling.Models.User;
 
 public interface GymBuddyDAOInterface {
