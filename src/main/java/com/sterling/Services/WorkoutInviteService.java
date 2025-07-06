@@ -16,7 +16,7 @@ public class WorkoutInviteService {
         this.gymBuddyService = gymBuddyService;
     }
 
-    public void sendInvite(WorkoutInvite invite) {
+    public String sendInvite(WorkoutInvite invite) {
         int senderId = invite.getSenderId();
         int recipientId = invite.getRecipientId();
         Timestamp now = Timestamp.from(Instant.now());
@@ -39,11 +39,15 @@ public class WorkoutInviteService {
             //Add gym both users as gym buddies
             gymBuddyService.addGymBuddy(senderId, recipientId);
             gymBuddyService.addGymBuddy(recipientId, senderId);
+
+            return "Invite Accepted!";
         } else {
             invite.setStatus("pending");
             invite.setSentAt(now);
             invite.setRespondedAt(null);
             workoutInviteDao.saveInvite(invite);
+
+            return "Invite sent successfully!";
         }
     }
 

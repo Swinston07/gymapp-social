@@ -2,7 +2,8 @@ package com.sterling.Controllers;
 
 import java.util.List;
 
-import com.sterling.Models.GymBuddy;
+//import com.sterling.Models.GymBuddy;
+import com.sterling.Models.User;
 import com.sterling.Services.GymBuddyService;
 
 import io.javalin.http.Context;
@@ -53,7 +54,7 @@ public class GymBuddyController {
             return;
         }
 
-        List<GymBuddy> buddies = gymBuddyService.getGymBuddiesByUserId(userId);
+        List<User> buddies = gymBuddyService.getGymBuddiesByUserId(userId);
         ctx.status(200).json(buddies);
     }
 }

@@ -3,7 +3,8 @@ package com.sterling.Services;
 import java.util.List;
 
 import com.sterling.Interfaces.GymBuddyDAOInterface;
-import com.sterling.Models.GymBuddy;
+//import com.sterling.Models.GymBuddy;
+import com.sterling.Models.User;
 
 public class GymBuddyService {
     private GymBuddyDAOInterface gymBuddyDao;
@@ -20,7 +21,7 @@ public class GymBuddyService {
         return gymBuddyDao.exists(userId, buddyId);
     }
 
-    public List<GymBuddy> getGymBuddiesByUserId(int userId){
+    public List<User> getGymBuddiesByUserId(int userId){
         return gymBuddyDao.getBuddiesByUserId(userId);
     }
 }

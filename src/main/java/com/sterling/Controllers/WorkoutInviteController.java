@@ -32,8 +32,9 @@ public class WorkoutInviteController {
         invite.setRecipientId(recipientId);
         invite.setSentAt(Timestamp.from(Instant.now()));
         invite.setStatus("pending");
-        workoutInviteService.sendInvite(invite);
-        ctx.status(201).result("Invite sent successfully!");
+        
+        String result = workoutInviteService.sendInvite(invite);
+        ctx.status(201).result(result);
     }
 
     public void getInvitesForUser(Context ctx){

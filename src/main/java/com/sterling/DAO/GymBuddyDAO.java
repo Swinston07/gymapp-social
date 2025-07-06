@@ -9,7 +9,8 @@ import java.util.List;
 
 import com.sterling.Connection.DBConnection;
 import com.sterling.Interfaces.GymBuddyDAOInterface;
-import com.sterling.Models.GymBuddy;
+//import com.sterling.Models.GymBuddy;
+import com.sterling.Models.User;
 
 public class GymBuddyDAO implements GymBuddyDAOInterface {
     @Override
@@ -50,9 +51,9 @@ public class GymBuddyDAO implements GymBuddyDAOInterface {
     }
 
     @Override
-    public List<GymBuddy> getBuddiesByUserId(int userId){
-        String sql = "SELECT * FROM gym_buddies WHERE user_id = ?";
-        List<GymBuddy> buddies = new ArrayList<>();
+    public List<User> getBuddiesByUserId(int userId){
+        String sql = "SELECT u.id, u.username, u.first_name, u.last_name FROM gym_buddies gb JOIN users u ON gb.buddy_id = u.id WHERE gb.user_id = ?";
+        List<User> buddies = new ArrayList<>();
 
         try (Connection conn = DBConnection.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -63,10 +64,11 @@ public class GymBuddyDAO implements GymBuddyDAOInterface {
 
             while(rs.next()){
                 buddies.add(
-                    new GymBuddy(
-                        rs.getInt("user_id"),
-                        rs.getInt("buddy_id"),
-                        rs.getTimestamp("created_at")
+                    new User(
+                        rs.getInt("id"),
+                        rs.getString("username"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name")
                     )
                 );
             }

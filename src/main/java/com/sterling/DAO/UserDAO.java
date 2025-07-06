@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import com.sterling.Interfaces.UserDAOInterface;
 public class UserDAO implements UserDAOInterface {
     @Override
     public void addUser(User user){
-        String sql = "INSERT INTO users (email, username, password_hash, first_name, last_name, age, start_weight, start_body_fat_percentage, feet, inches, home_gym, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (email, username, password_hash, first_name, last_name, age, start_weight, start_body_fat_percentage, feet, inches, home_gym, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try(Connection conn = DBConnection.getConnection()){
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -31,8 +32,16 @@ public class UserDAO implements UserDAOInterface {
             ps.setInt(9, user.getHeightFeet());
             ps.setInt(10, user.getHeightInches());
             ps.setString(11,user.getHomeGym());
-            ps.setDouble(12, user.getLatitude());
-            ps.setDouble(13, user.getLongitude());
+
+            if(user.getLatitude() != null)
+                ps.setDouble(12, user.getLatitude());
+            else
+                ps.setNull(12, Types.DOUBLE);
+
+            if(user.getLongitude() != null)
+                ps.setDouble(13, user.getLongitude());
+            else
+                ps.setNull(13, Types.DOUBLE);
 
             ps.executeUpdate();
         }

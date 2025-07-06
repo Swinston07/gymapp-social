@@ -70,6 +70,13 @@ public class User {
         this.isWorkingOut = isWorkingOut;
     }
 
+    public User(int id, String username, String firstName, String lastName) {
+        this.id = id;
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     public int getId() {
         return id;
     }
