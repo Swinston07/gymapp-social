@@ -5,6 +5,7 @@ import com.sterling.Controllers.AssignedWorkoutController;
 import com.sterling.Controllers.BlogPostController;
 import com.sterling.Controllers.ExerciseController;
 import com.sterling.Controllers.GymBuddyController;
+import com.sterling.Controllers.MessageController;
 import com.sterling.Controllers.UserController;
 import com.sterling.Controllers.UserProgressController;
 import com.sterling.Controllers.WorkoutInviteController;
@@ -13,6 +14,7 @@ import com.sterling.DAO.AssignedWorkoutDAO;
 import com.sterling.DAO.BlogPostDAO;
 import com.sterling.DAO.ExerciseDAO;
 import com.sterling.DAO.GymBuddyDAO;
+import com.sterling.DAO.MessageDAO;
 import com.sterling.DAO.UserDAO;
 import com.sterling.DAO.UserProgressDAO;
 import com.sterling.DAO.WorkoutInviteDAO;
@@ -21,6 +23,7 @@ import com.sterling.Services.AssignedWorkoutService;
 import com.sterling.Services.BlogPostService;
 import com.sterling.Services.ExerciseService;
 import com.sterling.Services.GymBuddyService;
+import com.sterling.Services.MessageService;
 import com.sterling.Services.UserProgressService;
 import com.sterling.Services.UserService;
 import com.sterling.Services.WorkoutInviteService;
@@ -39,6 +42,7 @@ public class Main {
         UserProgressDAO userProgressDAO = new UserProgressDAO();
         WorkoutInviteDAO workoutInviteDao = new WorkoutInviteDAO();
         GymBuddyDAO gymBuddyDAO = new GymBuddyDAO();
+        MessageDAO messageDAO = new MessageDAO();
 
         UserService userService = new UserService(userDAO);
         ExerciseService exerciseService = new ExerciseService(exerciseDAO);
@@ -48,6 +52,7 @@ public class Main {
         UserProgressService userProgressService = new UserProgressService(userProgressDAO);
         GymBuddyService gymBuddyService = new GymBuddyService(gymBuddyDAO);
         WorkoutInviteService workoutInviteService = new WorkoutInviteService(workoutInviteDao, gymBuddyService);
+        MessageService messageService = new MessageService(messageDAO);
 
         UserController userController = new UserController(userService);
         ExerciseController exerciseController = new ExerciseController(exerciseService);
@@ -57,6 +62,7 @@ public class Main {
         UserProgressController userProgressController = new UserProgressController(userProgressService);
         WorkoutInviteController workoutInviteController = new WorkoutInviteController(workoutInviteService);
         GymBuddyController gymBuddyController = new GymBuddyController(gymBuddyService);
+        MessageController messageController = new MessageController(messageService);
 
         app.before(ctx->{
             ctx.header("Access-Control-Allow-Origin", "*");
@@ -77,6 +83,7 @@ public class Main {
         app.before("/progress/*", Main::protectRoute);
         app.before("/users/*/workout-invites*", Main::protectRoute);
         app.before("/users/*/gym-buddies*", Main::protectRoute);
+        app.before("/messages/*", Main::protectRoute);
         
 
         app.start(7000);
@@ -91,7 +98,7 @@ public class Main {
         app.get("/users/{id}/matches", userController::findUsersByHomeGym);
         app.put("/users/{id}", userController::updateUser);
         app.put("/users/{id}/role", userController::updateUserRole);
-        app.put("users/{id}/update-location", userController::updateHomeGym);
+        app.put("/users/{id}/update-location", userController::updateHomeGym);
         app.put("/users/{id}/toggle-workout", userController::toggleWorkoutStatus);
         app.put("/trainers/{trainerId}/clients/{clientId}", userController::assignClientToTrainer);
         app.delete("/users/{id}", userController::deleteUser);
@@ -141,6 +148,12 @@ public class Main {
         app.post("/users/{id}/gym-buddies/{buddyId}", gymBuddyController::addGymBuddy);
         app.get("/users/{id}/gym-buddies", gymBuddyController::getGymBuddiesByUserId);
         app.get("/users/{id}/gym-buddies/{buddyId}", gymBuddyController::exists);
+
+        //Message Routes
+        app.post("/messages/{id}/{receiverId}", messageController::sendMessage);
+        app.get("/messages/{id}/{otherUserId}", messageController::getMessagesBetweenUsers);
+        app.get("/messages/{id}", messageController::getMessagesForUser);
+        app.delete("/messages/{messageId}", messageController::deleteMessage);
     }
 
     public static void protectRoute(io.javalin.http.Context ctx){
