@@ -6,6 +6,7 @@ import com.sterling.Controllers.BlogPostController;
 import com.sterling.Controllers.ExerciseController;
 import com.sterling.Controllers.GymBuddyController;
 import com.sterling.Controllers.MessageController;
+import com.sterling.Controllers.PhotoController;
 import com.sterling.Controllers.UserController;
 import com.sterling.Controllers.UserProgressController;
 import com.sterling.Controllers.WorkoutInviteController;
@@ -63,6 +64,7 @@ public class Main {
         WorkoutInviteController workoutInviteController = new WorkoutInviteController(workoutInviteService);
         GymBuddyController gymBuddyController = new GymBuddyController(gymBuddyService);
         MessageController messageController = new MessageController(messageService);
+        PhotoController photoController = new PhotoController();
 
         app.before(ctx->{
             ctx.header("Access-Control-Allow-Origin", "*");
@@ -154,6 +156,9 @@ public class Main {
         app.get("/messages/{id}/{otherUserId}", messageController::getMessagesBetweenUsers);
         app.get("/messages/{id}", messageController::getMessagesForUser);
         app.delete("/messages/{messageId}", messageController::deleteMessage);
+
+        //Photo Routes
+        app.post("/upload-photo", photoController::uploadPhoto);
     }
 
     public static void protectRoute(io.javalin.http.Context ctx){
