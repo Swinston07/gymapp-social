@@ -16,6 +16,7 @@ import com.sterling.DAO.BlogPostDAO;
 import com.sterling.DAO.ExerciseDAO;
 import com.sterling.DAO.GymBuddyDAO;
 import com.sterling.DAO.MessageDAO;
+import com.sterling.DAO.PhotoDAO;
 import com.sterling.DAO.UserDAO;
 import com.sterling.DAO.UserProgressDAO;
 import com.sterling.DAO.WorkoutInviteDAO;
@@ -25,6 +26,7 @@ import com.sterling.Services.BlogPostService;
 import com.sterling.Services.ExerciseService;
 import com.sterling.Services.GymBuddyService;
 import com.sterling.Services.MessageService;
+import com.sterling.Services.PhotoService;
 import com.sterling.Services.UserProgressService;
 import com.sterling.Services.UserService;
 import com.sterling.Services.WorkoutInviteService;
@@ -44,6 +46,7 @@ public class Main {
         WorkoutInviteDAO workoutInviteDao = new WorkoutInviteDAO();
         GymBuddyDAO gymBuddyDAO = new GymBuddyDAO();
         MessageDAO messageDAO = new MessageDAO();
+        PhotoDAO photoDAO = new PhotoDAO();
 
         UserService userService = new UserService(userDAO);
         ExerciseService exerciseService = new ExerciseService(exerciseDAO);
@@ -54,6 +57,7 @@ public class Main {
         GymBuddyService gymBuddyService = new GymBuddyService(gymBuddyDAO);
         WorkoutInviteService workoutInviteService = new WorkoutInviteService(workoutInviteDao, gymBuddyService);
         MessageService messageService = new MessageService(messageDAO);
+        PhotoService photoService = new PhotoService(photoDAO);
 
         UserController userController = new UserController(userService);
         ExerciseController exerciseController = new ExerciseController(exerciseService);
@@ -64,7 +68,7 @@ public class Main {
         WorkoutInviteController workoutInviteController = new WorkoutInviteController(workoutInviteService);
         GymBuddyController gymBuddyController = new GymBuddyController(gymBuddyService);
         MessageController messageController = new MessageController(messageService);
-        PhotoController photoController = new PhotoController();
+        PhotoController photoController = new PhotoController(photoService);
 
         app.before(ctx->{
             ctx.header("Access-Control-Allow-Origin", "*");
@@ -86,6 +90,7 @@ public class Main {
         app.before("/users/*/workout-invites*", Main::protectRoute);
         app.before("/users/*/gym-buddies*", Main::protectRoute);
         app.before("/messages/*", Main::protectRoute);
+        app.before("/photos/*", Main::protectRoute);
         
 
         app.start(7000);
@@ -158,7 +163,10 @@ public class Main {
         app.delete("/messages/{messageId}", messageController::deleteMessage);
 
         //Photo Routes
-        app.post("/upload-photo", photoController::uploadPhoto);
+        app.post("/users/{id}/photos", photoController::uploadPhoto);
+        app.get("/users/{id}/photos", photoController::getPhotosByUserId);
+        app.get("/photos/{photoId}", photoController::getPhotoByPhotoId);
+        app.delete("/photos/{photoId}", photoController::deletePhotoByPhotoId);
     }
 
     public static void protectRoute(io.javalin.http.Context ctx){
