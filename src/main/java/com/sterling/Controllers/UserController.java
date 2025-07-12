@@ -222,7 +222,7 @@ public class UserController {
         int userId = Integer.parseInt(ctx.pathParam("id"));
 
         if(requesterId != userId){
-            ctx.status(404).result("Unauthorized to updat another user;s location");
+            ctx.status(404).result("Unauthorized to update another user's location");
             return;
         }
         

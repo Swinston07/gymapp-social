@@ -80,7 +80,11 @@ public class UserDAO implements UserDAOInterface {
                     rs.getString("home_gym"),
                     rs.getDouble("latitude"),
                     rs.getDouble("longitude"),
-                    rs.getBoolean("is_working_out")
+                    rs.getBoolean("is_working_out"),
+                    rs.getString("about_me"),
+                    rs.getString("experience_level"),
+                    rs.getString("lifestyle"),
+                    rs.getString("consistency")
                 );
             }
         }
@@ -117,10 +121,14 @@ public class UserDAO implements UserDAOInterface {
                     rs.getTimestamp("created_on"),
                     rs.getString("role"),
                     rs.getInt("trainer_id"),
-                    rs.getString("home_gmy"),
+                    rs.getString("home_gym"),
                     rs.getDouble("latitude"),
                     rs.getDouble("longitude"),
-                    rs.getBoolean("is_working_out")
+                    rs.getBoolean("is_working_out"),
+                    rs.getString("about_me"),
+                    rs.getString("experience_level"),
+                    rs.getString("lifestyle"),
+                    rs.getString("consistency")
                 );
             }
         }
@@ -160,7 +168,11 @@ public class UserDAO implements UserDAOInterface {
                     rs.getString("home_gym"),
                     rs.getDouble("latitude"),
                     rs.getDouble("longitude"),
-                    rs.getBoolean("is_working_out")
+                    rs.getBoolean("is_working_out"),
+                    rs.getString("about_me"),
+                    rs.getString("experience_level"),
+                    rs.getString("lifestyle"),
+                    rs.getString("consistency")
                 );
             }
         }
@@ -183,25 +195,29 @@ public class UserDAO implements UserDAOInterface {
                 users.add (
                         new User(
                         rs.getInt("id"),
-                        rs.getString("email"),
-                        rs.getString("username"),
-                        rs.getString("password_hash"),
-                        rs.getString("first_name"),
-                        rs.getString("last_name"),
-                        rs.getInt("age"),
-                        rs.getFloat("start_weight"),
-                        rs.getFloat("start_body_fat_percentage"),
-                        rs.getInt("feet"),
-                        rs.getInt("inches"),
-                        rs.getFloat("current_weight"),
-                        rs.getFloat("current_body_fat_percentage"),
-                        rs.getTimestamp("created_on"),
-                        rs.getString("role"),
-                        rs.getInt("trainer_id"),
-                        rs.getString("home_gym"),
-                        rs.getDouble("latitude"),
-                        rs.getDouble("longitude"),
-                        rs.getBoolean("is_working_out")
+                    rs.getString("email"),
+                    rs.getString("username"),
+                    rs.getString("password_hash"),
+                    rs.getString("first_name"),
+                    rs.getString("last_name"),
+                    rs.getInt("age"),
+                    rs.getFloat("start_weight"),
+                    rs.getFloat("start_body_fat_percentage"),
+                    rs.getInt("feet"),
+                    rs.getInt("inches"),
+                    rs.getFloat("current_weight"),
+                    rs.getFloat("current_body_fat_percentage"),
+                    rs.getTimestamp("created_on"),
+                    rs.getString("role"),
+                    rs.getInt("trainer_id"),
+                    rs.getString("home_gym"),
+                    rs.getDouble("latitude"),
+                    rs.getDouble("longitude"),
+                    rs.getBoolean("is_working_out"),
+                    rs.getString("about_me"),
+                    rs.getString("experience_level"),
+                    rs.getString("lifestyle"),
+                    rs.getString("consistency")
                     )
                 );
             }
@@ -214,7 +230,8 @@ public class UserDAO implements UserDAOInterface {
 
     @Override
     public boolean updateUser(User user){
-        String sql = "UPDATE users SET email = ?, username = ?, password_hash = ?, first_name = ?, last_name = ?, age = ?, start_weight = ?, start_body_fat_percentage = ?, feet = ?, inches = ?, current_weight = ?, current_body_fat_percentage = ?, home_gym = ?, latitude = ?, longitude = ? WHERE id = ?";
+        String sql = "UPDATE users SET email = ?, username = ?, password_hash = ?, first_name = ?, last_name = ?, age = ?, start_weight = ?, start_body_fat_percentage = ?, feet = ?, inches = ?, current_weight = ?, current_body_fat_percentage = ?, home_gym = ?, latitude = ?, longitude = ?, " +
+        "about_me = ?, experience_level = ?, lifestyle = ?, consistency = ?  WHERE id = ?";
         boolean updated = false;
 
         try(Connection conn = DBConnection.getConnection()){
@@ -232,10 +249,14 @@ public class UserDAO implements UserDAOInterface {
             ps.setInt(10, user.getHeightInches());
             ps.setFloat(11, user.getCurrentWeight());
             ps.setFloat(12, user.getCurrentBodyFatPercentage());
-            ps.setInt(13, user.getId());
-            ps.setString(14, user.getHomeGym());
-            ps.setDouble(15, user.getLatitude());
-            ps.setDouble(16, user.getLongitude());
+            ps.setString(13, user.getHomeGym());
+            ps.setDouble(14, user.getLatitude());
+            ps.setDouble(15, user.getLongitude());
+            ps.setString(16, user.getAboutMe());
+            ps.setString(17, user.getExperienceLevel());
+            ps.setString(18, user.getLifestyle());
+            ps.setString(19, user.getConsistency());
+            ps.setInt(20, user.getId());
 
             int rowsAffected = ps.executeUpdate();
             updated = rowsAffected > 0;
@@ -321,25 +342,29 @@ public class UserDAO implements UserDAOInterface {
                 clientList.add(
                     new User(
                         rs.getInt("id"),
-                        rs.getString("email"),
-                        rs.getString("username"),
-                        rs.getString("password_hash"),
-                        rs.getString("first_name"),
-                        rs.getString("last_name"),
-                        rs.getInt("age"),
-                        rs.getFloat("start_weight"),
-                        rs.getFloat("start_body_fat_percentage"),
-                        rs.getInt("feet"),
-                        rs.getInt("inches"),
-                        rs.getFloat("current_weight"),
-                        rs.getFloat("current_body_fat_percentage"),
-                        rs.getTimestamp("created_on"),
-                        rs.getString("role"),
-                        rs.getInt("trainer_id"),
-                        rs.getString("home_gym"),
-                        rs.getDouble("latitude"),
-                        rs.getDouble("longitude"),
-                        rs.getBoolean("is_working_out")
+                    rs.getString("email"),
+                    rs.getString("username"),
+                    rs.getString("password_hash"),
+                    rs.getString("first_name"),
+                    rs.getString("last_name"),
+                    rs.getInt("age"),
+                    rs.getFloat("start_weight"),
+                    rs.getFloat("start_body_fat_percentage"),
+                    rs.getInt("feet"),
+                    rs.getInt("inches"),
+                    rs.getFloat("current_weight"),
+                    rs.getFloat("current_body_fat_percentage"),
+                    rs.getTimestamp("created_on"),
+                    rs.getString("role"),
+                    rs.getInt("trainer_id"),
+                    rs.getString("home_gym"),
+                    rs.getDouble("latitude"),
+                    rs.getDouble("longitude"),
+                    rs.getBoolean("is_working_out"),
+                    rs.getString("about_me"),
+                    rs.getString("experience_level"),
+                    rs.getString("lifestyle"),
+                    rs.getString("consistency")
                     )
                 );
             }
@@ -409,25 +434,29 @@ public class UserDAO implements UserDAOInterface {
                 matches.add(
                     new User(
                         rs.getInt("id"),
-                        rs.getString("email"),
-                        rs.getString("username"),
-                        rs.getString("password_hash"),
-                        rs.getString("first_name"),
-                        rs.getString("last_name"),
-                        rs.getInt("age"),
-                        rs.getFloat("start_weight"),
-                        rs.getFloat("start_body_fat_percentage"),
-                        rs.getInt("feet"),
-                        rs.getInt("inches"),
-                        rs.getFloat("current_weight"),
-                        rs.getFloat("current_body_fat_percentage"),
-                        rs.getTimestamp("created_on"),
-                        rs.getString("role"),
-                        rs.getInt("trainer_id"),
-                        rs.getString("home_gym"),
-                        rs.getDouble("latitude"),
-                        rs.getDouble("longitude"),
-                        rs.getBoolean("is_working_out")
+                    rs.getString("email"),
+                    rs.getString("username"),
+                    rs.getString("password_hash"),
+                    rs.getString("first_name"),
+                    rs.getString("last_name"),
+                    rs.getInt("age"),
+                    rs.getFloat("start_weight"),
+                    rs.getFloat("start_body_fat_percentage"),
+                    rs.getInt("feet"),
+                    rs.getInt("inches"),
+                    rs.getFloat("current_weight"),
+                    rs.getFloat("current_body_fat_percentage"),
+                    rs.getTimestamp("created_on"),
+                    rs.getString("role"),
+                    rs.getInt("trainer_id"),
+                    rs.getString("home_gym"),
+                    rs.getDouble("latitude"),
+                    rs.getDouble("longitude"),
+                    rs.getBoolean("is_working_out"),
+                    rs.getString("about_me"),
+                    rs.getString("experience_level"),
+                    rs.getString("lifestyle"),
+                    rs.getString("consistency")
                     )
                 );
             }
@@ -454,25 +483,29 @@ public class UserDAO implements UserDAOInterface {
                 userList.add(
                     new User(
                         rs.getInt("id"),
-                        rs.getString("email"),
-                        rs.getString("username"),
-                        rs.getString("password_hash"),
-                        rs.getString("first_name"),
-                        rs.getString("last_name"),
-                        rs.getInt("age"),
-                        rs.getFloat("start_weight"),
-                        rs.getFloat("start_body_fat_percentage"),
-                        rs.getInt("feet"),
-                        rs.getInt("inches"),
-                        rs.getFloat("current_weight"),
-                        rs.getFloat("current_body_fat_percentage"),
-                        rs.getTimestamp("created_on"),
-                        rs.getString("role"),
-                        rs.getInt("trainer_id"),
-                        rs.getString("home_gym"),
-                        rs.getDouble("latitude"),
-                        rs.getDouble("longitude"),
-                        rs.getBoolean("is_working_out")
+                    rs.getString("email"),
+                    rs.getString("username"),
+                    rs.getString("password_hash"),
+                    rs.getString("first_name"),
+                    rs.getString("last_name"),
+                    rs.getInt("age"),
+                    rs.getFloat("start_weight"),
+                    rs.getFloat("start_body_fat_percentage"),
+                    rs.getInt("feet"),
+                    rs.getInt("inches"),
+                    rs.getFloat("current_weight"),
+                    rs.getFloat("current_body_fat_percentage"),
+                    rs.getTimestamp("created_on"),
+                    rs.getString("role"),
+                    rs.getInt("trainer_id"),
+                    rs.getString("home_gym"),
+                    rs.getDouble("latitude"),
+                    rs.getDouble("longitude"),
+                    rs.getBoolean("is_working_out"),
+                    rs.getString("about_me"),
+                    rs.getString("experience_level"),
+                    rs.getString("lifestyle"),
+                    rs.getString("consistency")
                     )
                 );
             }
@@ -502,25 +535,29 @@ public class UserDAO implements UserDAOInterface {
                 userList.add(
                     new User(
                         rs.getInt("id"),
-                        rs.getString("email"),
-                        rs.getString("username"),
-                        rs.getString("password_hash"),
-                        rs.getString("first_name"),
-                        rs.getString("last_name"),
-                        rs.getInt("age"),
-                        rs.getFloat("start_weight"),
-                        rs.getFloat("start_body_fat_percentage"),
-                        rs.getInt("feet"),
-                        rs.getInt("inches"),
-                        rs.getFloat("current_weight"),
-                        rs.getFloat("current_body_fat_percentage"),
-                        rs.getTimestamp("created_on"),
-                        rs.getString("role"),
-                        rs.getInt("trainer_id"),
-                        rs.getString("home_gym"),
-                        rs.getDouble("latitude"),
-                        rs.getDouble("longitude"),
-                        rs.getBoolean("is_working_out")
+                    rs.getString("email"),
+                    rs.getString("username"),
+                    rs.getString("password_hash"),
+                    rs.getString("first_name"),
+                    rs.getString("last_name"),
+                    rs.getInt("age"),
+                    rs.getFloat("start_weight"),
+                    rs.getFloat("start_body_fat_percentage"),
+                    rs.getInt("feet"),
+                    rs.getInt("inches"),
+                    rs.getFloat("current_weight"),
+                    rs.getFloat("current_body_fat_percentage"),
+                    rs.getTimestamp("created_on"),
+                    rs.getString("role"),
+                    rs.getInt("trainer_id"),
+                    rs.getString("home_gym"),
+                    rs.getDouble("latitude"),
+                    rs.getDouble("longitude"),
+                    rs.getBoolean("is_working_out"),
+                    rs.getString("about_me"),
+                    rs.getString("experience_level"),
+                    rs.getString("lifestyle"),
+                    rs.getString("consistency")
                     )
                 );
             }

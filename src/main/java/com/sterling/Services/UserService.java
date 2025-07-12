@@ -45,25 +45,29 @@ public class UserService {
     }
 
     public boolean updateUser(User user){
-        //User existingUser = userDao.getUserById(user.getId());
+        User existingUser = userDao.getUserById(user.getId());
 
-        user.setAge(user.getAge());
-        user.setCurrentBodyFatPercentage(user.getCurrentBodyFatPercentage());
-        user.setCurrentWeight(user.getCurrentWeight());
-        user.setEmail(user.getEmail());
-        user.setFirstName(user.getFirstName());
-        user.setHeightFeet(user.getHeightFeet());
-        user.setHeightInches(user.getHeightInches());
-        user.setLastName(user.getLastName());
-        user.setPassword(user.getPassword());
-        user.setStartBodyFatPercentage(user.getStartBodyFatPercentage());
-        user.setStartWeight(user.getStartWeight());
-        user.setUsername(user.getUsername());
-        user.setHomeGym(user.getHomeGym());
-        user.setLatitude(user.getLatitude());
-        user.setLongitude(user.getLongitude());
+        existingUser.setAge(user.getAge());
+        existingUser.setCurrentBodyFatPercentage(user.getCurrentBodyFatPercentage());
+        existingUser.setCurrentWeight(user.getCurrentWeight());
+        existingUser.setEmail(user.getEmail());
+        existingUser.setFirstName(user.getFirstName());
+        existingUser.setHeightFeet(user.getHeightFeet());
+        existingUser.setHeightInches(user.getHeightInches());
+        existingUser.setLastName(user.getLastName());
+        existingUser.setPassword(user.getPassword());
+        existingUser.setStartBodyFatPercentage(user.getStartBodyFatPercentage());
+        existingUser.setStartWeight(user.getStartWeight());
+        existingUser.setUsername(user.getUsername());
+        if(user.getHomeGym()!=null) existingUser.setHomeGym(user.getHomeGym());
+        existingUser.setLatitude(user.getLatitude());
+        existingUser.setLongitude(user.getLongitude());
+        existingUser.setAboutMe(user.getAboutMe());
+        existingUser.setExperienceLevel(user.getExperienceLevel());
+        existingUser.setLifestyle(user.getLifestyle());
+        existingUser.setConsistency(user.getConsistency());
 
-        return userDao.updateUser(user);
+        return userDao.updateUser(existingUser);
     }
 
     public boolean deleteUser(int id){

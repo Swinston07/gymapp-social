@@ -40,14 +40,22 @@ public class User {
     private Double longitude;
     @JsonProperty("is_working_out")
     private boolean isWorkingOut;
+    @JsonProperty("about_me")
+    private String aboutMe;
+    @JsonProperty("experience_level")
+    private String experienceLevel;
+    private String lifestyle;
+    private String consistency;
 
     public User() {
     }
 
+    
     public User(int id, String email, String username, String password, String firstName, String lastName, int age,
             float startWeight, float startBodyFatPercentage, int heightFeet, int heightInches, float currentWeight,
             float currentBodyFatPercentage, Timestamp createdOn, String role, Integer trainerId, String homeGym,
-            Double latitude, Double longitude, boolean isWorkingOut) {
+            Double latitude, Double longitude, boolean isWorkingOut, String aboutMe, String experienceLevel,
+            String lifestyle, String consistency) {
         this.id = id;
         this.email = email;
         this.username = username;
@@ -68,6 +76,10 @@ public class User {
         this.latitude = latitude;
         this.longitude = longitude;
         this.isWorkingOut = isWorkingOut;
+        this.aboutMe = aboutMe;
+        this.experienceLevel = experienceLevel;
+        this.lifestyle = lifestyle;
+        this.consistency = consistency;
     }
 
     public User(int id, String username, String firstName, String lastName) {
@@ -235,6 +247,47 @@ public class User {
 
     public void setIsWorkingOut(boolean isWorkingOut) {
         this.isWorkingOut = isWorkingOut;
+    }
+
+    public void setWorkingOut(boolean isWorkingOut) {
+        this.isWorkingOut = isWorkingOut;
+    }
+
+    public String getAboutMe() {
+        return aboutMe;
+    }
+
+    public void setAboutMe(String aboutMe) {
+        this.aboutMe = aboutMe;
+    }
+
+    public String getExperienceLevel() {
+        return experienceLevel;
+    }
+
+
+    public void setExperienceLevel(String experienceLevel) {
+        this.experienceLevel = experienceLevel;
+    }
+
+
+    public String getLifestyle() {
+        return lifestyle;
+    }
+
+
+    public void setLifestyle(String lifestyle) {
+        this.lifestyle = lifestyle;
+    }
+
+
+    public String getConsistency() {
+        return consistency;
+    }
+
+
+    public void setConsistency(String consistency) {
+        this.consistency = consistency;
     }
 
     
