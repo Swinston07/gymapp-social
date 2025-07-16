@@ -1,5 +1,8 @@
 package com.sterling.DAO;
 
+import com.sterling.Models.Consistency;
+import com.sterling.Models.ExperienceLevel;
+import com.sterling.Models.Lifestyle;
 import com.sterling.Models.User;
 
 import java.sql.Connection;
@@ -16,7 +19,7 @@ import com.sterling.Interfaces.UserDAOInterface;
 public class UserDAO implements UserDAOInterface {
     @Override
     public void addUser(User user){
-        String sql = "INSERT INTO users (email, username, password_hash, first_name, last_name, age, start_weight, start_body_fat_percentage, feet, inches, home_gym, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (email, username, password_hash, first_name, last_name, age, start_weight, start_body_fat_percentage, feet, inches, home_gym, latitude, longitude, experience_level, lifestyle, consistency) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try(Connection conn = DBConnection.getConnection()){
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -43,6 +46,10 @@ public class UserDAO implements UserDAOInterface {
             else
                 ps.setNull(13, Types.DOUBLE);
 
+            ps.setString(14, user.getExperienceLevel() != null ? user.getExperienceLevel().toString() : null);
+            ps.setString(15, user.getLifestyle() != null ? user.getLifestyle().toString() : null);
+            ps.setString(16, user.getConsistency() != null ? user.getConsistency().toString() : null);
+
             ps.executeUpdate();
         }
         catch(SQLException e){
@@ -60,7 +67,12 @@ public class UserDAO implements UserDAOInterface {
             ResultSet rs = ps.executeQuery();
 
             if(rs.next()){
-                return new User(
+
+                ExperienceLevel experienceLevel = rs.getString("experience_level") != null ? ExperienceLevel.valueOf(rs.getString("experience_level")) : null;
+                Lifestyle lifestyle = rs.getString("lifestyle") != null ? Lifestyle.valueOf(rs.getString("lifestyle")) : null;
+                Consistency consistency = rs.getString("consistency") != null ? Consistency.valueOf(rs.getString("consistency")) : null;
+
+                User user = new User(
                     rs.getInt("id"),
                     rs.getString("email"),
                     rs.getString("username"),
@@ -82,10 +94,12 @@ public class UserDAO implements UserDAOInterface {
                     rs.getDouble("longitude"),
                     rs.getBoolean("is_working_out"),
                     rs.getString("about_me"),
-                    rs.getString("experience_level"),
-                    rs.getString("lifestyle"),
-                    rs.getString("consistency")
+                    experienceLevel,
+                    lifestyle,
+                    consistency
                 );
+
+                return user;
             }
         }
         catch(SQLException e){
@@ -104,7 +118,12 @@ public class UserDAO implements UserDAOInterface {
             ResultSet rs = ps.executeQuery();
 
             if(rs.next()){
-                return new User(
+
+                ExperienceLevel experienceLevel = rs.getString("experience_level") != null ? ExperienceLevel.valueOf(rs.getString("experience_level")) : null;
+                Lifestyle lifestyle = rs.getString("lifestyle") != null ? Lifestyle.valueOf(rs.getString("lifestyle")) : null;
+                Consistency consistency = rs.getString("consistency") != null ? Consistency.valueOf(rs.getString("consistency")) : null;
+
+                User user = new User(
                     rs.getInt("id"),
                     rs.getString("email"),
                     rs.getString("username"),
@@ -126,10 +145,12 @@ public class UserDAO implements UserDAOInterface {
                     rs.getDouble("longitude"),
                     rs.getBoolean("is_working_out"),
                     rs.getString("about_me"),
-                    rs.getString("experience_level"),
-                    rs.getString("lifestyle"),
-                    rs.getString("consistency")
+                    experienceLevel,
+                    lifestyle,
+                    consistency
                 );
+
+                return user;
             }
         }
         catch (SQLException e){
@@ -148,7 +169,12 @@ public class UserDAO implements UserDAOInterface {
             ResultSet rs = ps.executeQuery();
 
             if(rs.next()){
-                return new User(
+
+                ExperienceLevel experienceLevel = rs.getString("experience_level") != null ? ExperienceLevel.valueOf(rs.getString("experience_level")) : null;
+                Lifestyle lifestyle = rs.getString("lifestyle") != null ? Lifestyle.valueOf(rs.getString("lifestyle")) : null;
+                Consistency consistency = rs.getString("consistency") != null ? Consistency.valueOf(rs.getString("consistency")) : null;
+
+                User user = new User(
                     rs.getInt("id"),
                     rs.getString("email"),
                     rs.getString("username"),
@@ -170,10 +196,11 @@ public class UserDAO implements UserDAOInterface {
                     rs.getDouble("longitude"),
                     rs.getBoolean("is_working_out"),
                     rs.getString("about_me"),
-                    rs.getString("experience_level"),
-                    rs.getString("lifestyle"),
-                    rs.getString("consistency")
+                    experienceLevel,
+                    lifestyle,
+                    consistency
                 );
+                return user;
             }
         }
         catch(SQLException e){
@@ -192,34 +219,37 @@ public class UserDAO implements UserDAOInterface {
             ResultSet rs = ps.executeQuery();
 
             while(rs.next()){
-                users.add (
-                        new User(
+                ExperienceLevel experienceLevel = rs.getString("experience_level") != null ? ExperienceLevel.valueOf(rs.getString("experience_level")) : null;
+                Lifestyle lifestyle = rs.getString("lifestyle") != null ? Lifestyle.valueOf(rs.getString("lifestyle")) : null;
+                Consistency consistency = rs.getString("consistency") != null ? Consistency.valueOf(rs.getString("consistency")) : null;
+
+                User user = new User(
                         rs.getInt("id"),
-                    rs.getString("email"),
-                    rs.getString("username"),
-                    rs.getString("password_hash"),
-                    rs.getString("first_name"),
-                    rs.getString("last_name"),
-                    rs.getInt("age"),
-                    rs.getFloat("start_weight"),
-                    rs.getFloat("start_body_fat_percentage"),
-                    rs.getInt("feet"),
-                    rs.getInt("inches"),
-                    rs.getFloat("current_weight"),
-                    rs.getFloat("current_body_fat_percentage"),
-                    rs.getTimestamp("created_on"),
-                    rs.getString("role"),
-                    rs.getInt("trainer_id"),
-                    rs.getString("home_gym"),
-                    rs.getDouble("latitude"),
-                    rs.getDouble("longitude"),
-                    rs.getBoolean("is_working_out"),
-                    rs.getString("about_me"),
-                    rs.getString("experience_level"),
-                    rs.getString("lifestyle"),
-                    rs.getString("consistency")
-                    )
-                );
+                        rs.getString("email"),
+                        rs.getString("username"),
+                        rs.getString("password_hash"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getInt("age"),
+                        rs.getFloat("start_weight"),
+                        rs.getFloat("start_body_fat_percentage"),
+                        rs.getInt("feet"),
+                        rs.getInt("inches"),
+                        rs.getFloat("current_weight"),
+                        rs.getFloat("current_body_fat_percentage"),
+                        rs.getTimestamp("created_on"),
+                        rs.getString("role"),
+                        rs.getInt("trainer_id"),
+                        rs.getString("home_gym"),
+                        rs.getDouble("latitude"),
+                        rs.getDouble("longitude"),
+                        rs.getBoolean("is_working_out"),
+                        rs.getString("about_me"),
+                        experienceLevel,
+                        lifestyle,
+                        consistency
+                    );
+                users.add(user);
             }
         }
         catch(SQLException e){
@@ -253,9 +283,9 @@ public class UserDAO implements UserDAOInterface {
             ps.setDouble(14, user.getLatitude());
             ps.setDouble(15, user.getLongitude());
             ps.setString(16, user.getAboutMe());
-            ps.setString(17, user.getExperienceLevel());
-            ps.setString(18, user.getLifestyle());
-            ps.setString(19, user.getConsistency());
+            ps.setString(17, user.getExperienceLevel() != null ? user.getExperienceLevel().toString() : null);
+            ps.setString(18, user.getLifestyle() != null ? user.getLifestyle().toString() : null);
+            ps.setString(19, user.getConsistency() != null ? user.getConsistency().toString() : null);
             ps.setInt(20, user.getId());
 
             int rowsAffected = ps.executeUpdate();
@@ -339,34 +369,37 @@ public class UserDAO implements UserDAOInterface {
             ResultSet rs = ps.executeQuery();
 
             while(rs.next()){
-                clientList.add(
-                    new User(
+                ExperienceLevel experienceLevel = rs.getString("experience_level") != null ? ExperienceLevel.valueOf(rs.getString("experience_level")) : null;
+                Lifestyle lifestyle = rs.getString("lifestyle") != null ? Lifestyle.valueOf(rs.getString("lifestyle")) : null;
+                Consistency consistency = rs.getString("consistency") != null ? Consistency.valueOf(rs.getString("consistency")) : null; 
+
+                User client = new User(
                         rs.getInt("id"),
-                    rs.getString("email"),
-                    rs.getString("username"),
-                    rs.getString("password_hash"),
-                    rs.getString("first_name"),
-                    rs.getString("last_name"),
-                    rs.getInt("age"),
-                    rs.getFloat("start_weight"),
-                    rs.getFloat("start_body_fat_percentage"),
-                    rs.getInt("feet"),
-                    rs.getInt("inches"),
-                    rs.getFloat("current_weight"),
-                    rs.getFloat("current_body_fat_percentage"),
-                    rs.getTimestamp("created_on"),
-                    rs.getString("role"),
-                    rs.getInt("trainer_id"),
-                    rs.getString("home_gym"),
-                    rs.getDouble("latitude"),
-                    rs.getDouble("longitude"),
-                    rs.getBoolean("is_working_out"),
-                    rs.getString("about_me"),
-                    rs.getString("experience_level"),
-                    rs.getString("lifestyle"),
-                    rs.getString("consistency")
-                    )
-                );
+                        rs.getString("email"),
+                        rs.getString("username"),
+                        rs.getString("password_hash"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getInt("age"),
+                        rs.getFloat("start_weight"),
+                        rs.getFloat("start_body_fat_percentage"),
+                        rs.getInt("feet"),
+                        rs.getInt("inches"),
+                        rs.getFloat("current_weight"),
+                        rs.getFloat("current_body_fat_percentage"),
+                        rs.getTimestamp("created_on"),
+                        rs.getString("role"),
+                        rs.getInt("trainer_id"),
+                        rs.getString("home_gym"),
+                        rs.getDouble("latitude"),
+                        rs.getDouble("longitude"),
+                        rs.getBoolean("is_working_out"),
+                        rs.getString("about_me"),
+                        experienceLevel,
+                        lifestyle,
+                        consistency
+                    );
+                clientList.add(client);
             }
         } catch(SQLException e){
             e.printStackTrace();
@@ -431,8 +464,11 @@ public class UserDAO implements UserDAOInterface {
             ResultSet rs = ps.executeQuery();
 
             while(rs.next()){
-                matches.add(
-                    new User(
+                ExperienceLevel experienceLevel = rs.getString("experience_level") != null ? ExperienceLevel.valueOf(rs.getString("experience_level")) : null;
+                Lifestyle lifestyle = rs.getString("lifestyle") != null ? Lifestyle.valueOf(rs.getString("lifestyle")) : null;
+                Consistency consistency = rs.getString("consistency") != null ? Consistency.valueOf(rs.getString("consistency")) : null;
+
+                User match = new User(
                         rs.getInt("id"),
                     rs.getString("email"),
                     rs.getString("username"),
@@ -454,11 +490,11 @@ public class UserDAO implements UserDAOInterface {
                     rs.getDouble("longitude"),
                     rs.getBoolean("is_working_out"),
                     rs.getString("about_me"),
-                    rs.getString("experience_level"),
-                    rs.getString("lifestyle"),
-                    rs.getString("consistency")
-                    )
+                    experienceLevel,
+                    lifestyle,
+                    consistency
                 );
+                matches.add(match);
             }
         } catch (SQLException e){
             e.printStackTrace();;
@@ -480,34 +516,37 @@ public class UserDAO implements UserDAOInterface {
             ResultSet rs = ps.executeQuery();
 
             while(rs.next()){
-                userList.add(
-                    new User(
+                ExperienceLevel experienceLevel = rs.getString("experience_level") != null ? ExperienceLevel.valueOf(rs.getString("experience_level")) : null;
+                Lifestyle lifestyle = rs.getString("lifestyle") != null ? Lifestyle.valueOf(rs.getString("lifestyle")) : null;
+                Consistency consistency = rs.getString("consistency") != null ? Consistency.valueOf(rs.getString("consistency")) : null;
+
+                User user = new User(
                         rs.getInt("id"),
-                    rs.getString("email"),
-                    rs.getString("username"),
-                    rs.getString("password_hash"),
-                    rs.getString("first_name"),
-                    rs.getString("last_name"),
-                    rs.getInt("age"),
-                    rs.getFloat("start_weight"),
-                    rs.getFloat("start_body_fat_percentage"),
-                    rs.getInt("feet"),
-                    rs.getInt("inches"),
-                    rs.getFloat("current_weight"),
-                    rs.getFloat("current_body_fat_percentage"),
-                    rs.getTimestamp("created_on"),
-                    rs.getString("role"),
-                    rs.getInt("trainer_id"),
-                    rs.getString("home_gym"),
-                    rs.getDouble("latitude"),
-                    rs.getDouble("longitude"),
-                    rs.getBoolean("is_working_out"),
-                    rs.getString("about_me"),
-                    rs.getString("experience_level"),
-                    rs.getString("lifestyle"),
-                    rs.getString("consistency")
-                    )
-                );
+                        rs.getString("email"),
+                        rs.getString("username"),
+                        rs.getString("password_hash"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getInt("age"),
+                        rs.getFloat("start_weight"),
+                        rs.getFloat("start_body_fat_percentage"),
+                        rs.getInt("feet"),
+                        rs.getInt("inches"),
+                        rs.getFloat("current_weight"),
+                        rs.getFloat("current_body_fat_percentage"),
+                        rs.getTimestamp("created_on"),
+                        rs.getString("role"),
+                        rs.getInt("trainer_id"),
+                        rs.getString("home_gym"),
+                        rs.getDouble("latitude"),
+                        rs.getDouble("longitude"),
+                        rs.getBoolean("is_working_out"),
+                        rs.getString("about_me"),
+                        experienceLevel,
+                        lifestyle,
+                        consistency
+                    );
+                userList.add(user);
             }
 
             return userList;
@@ -532,34 +571,37 @@ public class UserDAO implements UserDAOInterface {
             ResultSet rs = ps.executeQuery();
 
             while(rs.next()){
-                userList.add(
-                    new User(
+                ExperienceLevel experienceLevel = rs.getString("experience_level") != null ? ExperienceLevel.valueOf(rs.getString("experience_level")) : null;
+                Lifestyle lifestyle = rs.getString("lifestyle") != null ? Lifestyle.valueOf(rs.getString("lifestyle")) : null;
+                Consistency consistency = rs.getString("consistency") != null ? Consistency.valueOf(rs.getString("consistency")) : null;
+
+                User user = new User(
                         rs.getInt("id"),
-                    rs.getString("email"),
-                    rs.getString("username"),
-                    rs.getString("password_hash"),
-                    rs.getString("first_name"),
-                    rs.getString("last_name"),
-                    rs.getInt("age"),
-                    rs.getFloat("start_weight"),
-                    rs.getFloat("start_body_fat_percentage"),
-                    rs.getInt("feet"),
-                    rs.getInt("inches"),
-                    rs.getFloat("current_weight"),
-                    rs.getFloat("current_body_fat_percentage"),
-                    rs.getTimestamp("created_on"),
-                    rs.getString("role"),
-                    rs.getInt("trainer_id"),
-                    rs.getString("home_gym"),
-                    rs.getDouble("latitude"),
-                    rs.getDouble("longitude"),
-                    rs.getBoolean("is_working_out"),
-                    rs.getString("about_me"),
-                    rs.getString("experience_level"),
-                    rs.getString("lifestyle"),
-                    rs.getString("consistency")
-                    )
-                );
+                        rs.getString("email"),
+                        rs.getString("username"),
+                        rs.getString("password_hash"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getInt("age"),
+                        rs.getFloat("start_weight"),
+                        rs.getFloat("start_body_fat_percentage"),
+                        rs.getInt("feet"),
+                        rs.getInt("inches"),
+                        rs.getFloat("current_weight"),
+                        rs.getFloat("current_body_fat_percentage"),
+                        rs.getTimestamp("created_on"),
+                        rs.getString("role"),
+                        rs.getInt("trainer_id"),
+                        rs.getString("home_gym"),
+                        rs.getDouble("latitude"),
+                        rs.getDouble("longitude"),
+                        rs.getBoolean("is_working_out"),
+                        rs.getString("about_me"),
+                        experienceLevel,
+                        lifestyle,
+                        consistency
+                    );
+                userList.add(user);
             }
 
             return userList;
@@ -567,5 +609,88 @@ public class UserDAO implements UserDAOInterface {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public List<User> findUsersByFilters(String homeGym, String role, Integer minAge, Integer maxAge, ExperienceLevel experienceLevel, Lifestyle lifestyle, Consistency consistency, int currentUserId) {
+        StringBuilder sql = new StringBuilder("SELECT * FROM users WHERE home_gym = ? AND id != ?");
+        List<User> users = new ArrayList<>();
+        List<Object> params = new ArrayList<>();
+
+
+        params.add(homeGym);
+        params.add(currentUserId);
+
+        if(role != null) {
+            sql.append(" AND role = ?");
+            params.add(role);
+        }
+        if(minAge != null) {
+            sql.append(" AND age >= ?");
+            params.add(minAge);
+        }
+        if(maxAge != null) {
+            sql.append(" AND age <= ?");
+            params.add(maxAge);
+        }
+        if(experienceLevel != null) {
+            sql.append(" AND experience_level = ?");
+            params.add(experienceLevel);
+        }
+        if(lifestyle != null) {
+            sql.append(" AND lifestyle = ?");
+            params.add(lifestyle);
+        }
+        if(consistency != null) {
+            sql.append(" AND consistency = ?");
+            params.add(consistency);
+        }
+
+        try (Connection conn = DBConnection.getConnection()){
+            PreparedStatement ps = conn.prepareStatement(sql.toString());
+
+            for(int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+                ExperienceLevel level = rs.getString("experience_level") != null ? ExperienceLevel.valueOf(rs.getString("experience_level")) : null;
+                Lifestyle life = rs.getString("lifestyle") != null ? Lifestyle.valueOf(rs.getString("lifestyle")) : null;
+                Consistency consist = rs.getString("consistency") != null ? Consistency.valueOf(rs.getString("consistency")) : null;
+
+                User user = new User(
+                        rs.getInt("id"),
+                        rs.getString("email"),
+                        rs.getString("username"),
+                        rs.getString("password_hash"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getInt("age"),
+                        rs.getFloat("start_weight"),
+                        rs.getFloat("start_body_fat_percentage"),
+                        rs.getInt("feet"),
+                        rs.getInt("inches"),
+                        rs.getFloat("current_weight"),
+                        rs.getFloat("current_body_fat_percentage"),
+                        rs.getTimestamp("created_on"),
+                        rs.getString("role"),
+                        rs.getInt("trainer_id"),
+                        rs.getString("home_gym"),
+                        rs.getDouble("latitude"),
+                        rs.getDouble("longitude"),
+                        rs.getBoolean("is_working_out"),
+                        rs.getString("about_me"),
+                        level,
+                        life,
+                        consist
+                    );
+                users.add(user);
+            }
+        } catch (SQLException e) { 
+            e.printStackTrace();
+        }
+        return users;
     }
 }

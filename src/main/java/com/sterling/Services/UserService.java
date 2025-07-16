@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sterling.Interfaces.UserDAOInterface;
+import com.sterling.Models.Consistency;
+import com.sterling.Models.ExperienceLevel;
+import com.sterling.Models.Lifestyle;
 import com.sterling.Models.User;
 
 public class UserService {
@@ -145,5 +148,9 @@ public class UserService {
 
         if(requester == null || requester.getHomeGym() == null) return new ArrayList<>();
         return userDao.findUsersByHomeGym(requester.getHomeGym(), userId);
+    }
+
+    public List<User> findUsersByFilters(String homeGym, String role, Integer minAge, Integer maxAge, ExperienceLevel experienceLevel, Lifestyle lifestyle, Consistency consistency, int userId) {
+        return userDao.findUsersByFilters(homeGym, role, minAge, maxAge, experienceLevel, lifestyle, consistency, userId);
     }
 }

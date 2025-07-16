@@ -142,6 +142,7 @@ public class Main {
         app.get("/trainers/{trainerId}/clients", userController::getClientsByTrainerId);
         app.get("/users/{id}/nearby-gyms", userController::getNearByGyms);
         app.get("/users/{id}/matches", userController::findUsersByHomeGym);
+        app.get("/users/{id}/matches/filter", userController::findUsersByFilters);
         app.put("/users/{id}", userController::updateUser);
         app.put("/users/{id}/role", userController::updateUserRole);
         app.put("/users/{id}/update-location", userController::updateHomeGym);

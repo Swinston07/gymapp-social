@@ -43,9 +43,9 @@ public class User {
     @JsonProperty("about_me")
     private String aboutMe;
     @JsonProperty("experience_level")
-    private String experienceLevel;
-    private String lifestyle;
-    private String consistency;
+    private ExperienceLevel experienceLevel;
+    private Lifestyle lifestyle;
+    private Consistency consistency;
 
     public User() {
     }
@@ -54,8 +54,8 @@ public class User {
     public User(int id, String email, String username, String password, String firstName, String lastName, int age,
             float startWeight, float startBodyFatPercentage, int heightFeet, int heightInches, float currentWeight,
             float currentBodyFatPercentage, Timestamp createdOn, String role, Integer trainerId, String homeGym,
-            Double latitude, Double longitude, boolean isWorkingOut, String aboutMe, String experienceLevel,
-            String lifestyle, String consistency) {
+            Double latitude, Double longitude, boolean isWorkingOut, String aboutMe, ExperienceLevel experienceLevel,
+            Lifestyle lifestyle, Consistency consistency) {
         this.id = id;
         this.email = email;
         this.username = username;
@@ -261,32 +261,32 @@ public class User {
         this.aboutMe = aboutMe;
     }
 
-    public String getExperienceLevel() {
+    public ExperienceLevel getExperienceLevel() {
         return experienceLevel;
     }
 
 
-    public void setExperienceLevel(String experienceLevel) {
+    public void setExperienceLevel(ExperienceLevel experienceLevel) {
         this.experienceLevel = experienceLevel;
     }
 
 
-    public String getLifestyle() {
+    public Lifestyle getLifestyle() {
         return lifestyle;
     }
 
 
-    public void setLifestyle(String lifestyle) {
+    public void setLifestyle(Lifestyle lifestyle) {
         this.lifestyle = lifestyle;
     }
 
 
-    public String getConsistency() {
+    public Consistency getConsistency() {
         return consistency;
     }
 
 
-    public void setConsistency(String consistency) {
+    public void setConsistency(Consistency consistency) {
         this.consistency = consistency;
     }
 

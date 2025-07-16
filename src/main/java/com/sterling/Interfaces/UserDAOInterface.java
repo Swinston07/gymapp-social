@@ -2,6 +2,9 @@ package com.sterling.Interfaces;
 
 import java.util.List;
 
+import com.sterling.Models.Consistency;
+import com.sterling.Models.ExperienceLevel;
+import com.sterling.Models.Lifestyle;
 import com.sterling.Models.User;
 
 public interface UserDAOInterface {
@@ -20,4 +23,5 @@ public interface UserDAOInterface {
     List<User> findMatchingUsers(String homeGym, String role, int userId);
     List<User> findUsersByHomeGym(String homeGym, int userId);
     List<User> findUsersByHomeGymAndRole(String homeGym, String role, int userId);
+    List<User> findUsersByFilters(String homeGym, String role, Integer minAge, Integer maxAge, ExperienceLevel experienceLevel, Lifestyle lifestyle, Consistency consistency, int currentUserId);
 }

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.sterling.Models.Consistency;
+import com.sterling.Models.ExperienceLevel;
+import com.sterling.Models.Lifestyle;
 import com.sterling.Models.User;
 import com.sterling.Services.UserService;
 import com.sterling.Utils.JwtUtil;
@@ -237,7 +240,7 @@ public class UserController {
         if(success) {
             ctx.status(200).result("Home gym updated");
         } else {
-            ctx.status(400).result("Failed to updated Home gym");
+            ctx.status(400).result("Failed to update Home gym");
         }
     }
 
@@ -246,14 +249,14 @@ public class UserController {
         int requesterId = ctx.attribute("userId");
 
         if(requesterId != userId) {
-            ctx.status(403).result("Not authroized to update another user's workout status");
+            ctx.status(403).result("Not authorized to update another user's workout status");
             return;
         }
 
         boolean success = userService.toggleWorkoutStatus(userId);
 
         if(success){
-            ctx.status(200).result("Workout status toggles successufully");
+            ctx.status(200).result("Workout status toggled successfully");
         } else{
             ctx.status(500).result("Failed to toggle workout status");
         }
@@ -266,6 +269,7 @@ public class UserController {
 
         if(requesterId != userId){
             ctx.status(403).result("Unauthorized");
+            return;
         }
 
         List<User> matches = new ArrayList<>();
@@ -277,5 +281,55 @@ public class UserController {
             matches = userService.findUsersByHomeGym(userId);
         }
         ctx.status(200).json(matches);
+    }
+    
+    public void findUsersByFilters(Context ctx) {
+        int requesterId = ctx.attribute("userId");
+        int userId = Integer.parseInt(ctx.pathParam("id"));
+        String homeGym = ctx.queryParam("home_gym");
+        String role = ctx.queryParam("role");
+        String minAgeStr = ctx.queryParam("min_age");
+        String maxAgeStr = ctx.queryParam("max_age");
+
+        if(requesterId != userId) {
+            ctx.status(403).result("Unauthorized");
+            return;
+        }
+
+        if(homeGym == null) {
+            ctx.status(400).result("Missing home gym");
+            return;
+        }
+
+        Integer minAge = (minAgeStr != null) ? Integer.parseInt(minAgeStr) : null;
+        Integer maxAge = (maxAgeStr != null) ? Integer.parseInt(maxAgeStr)  : null;
+
+        ExperienceLevel experienceLevel = null;
+        Lifestyle lifestyle = null;
+        Consistency consistency = null;
+
+        String experienceLevelStr = ctx.queryParam("experience_level");
+        String lifeStyleStr = ctx.queryParam("lifestyle");
+        String consistencyStr = ctx.queryParam("consistency");
+
+        try {
+            if(experienceLevelStr != null) {
+                experienceLevel = ExperienceLevel.valueOf(experienceLevelStr.toUpperCase());
+            }
+
+            if(lifeStyleStr != null) {
+                lifestyle = Lifestyle.valueOf(lifeStyleStr.toUpperCase());
+            }
+
+            if(consistencyStr != null) {
+                consistency = Consistency.valueOf(consistencyStr.toUpperCase());
+            }
+
+            List<User> users = userService.findUsersByFilters(homeGym, role, minAge, maxAge, experienceLevel, lifestyle, consistency, userId);
+            ctx.json(users);
+        } catch (IllegalArgumentException e) {
+            ctx.status(400).result("Invalid filter experience level, lifestyle, or consistency");
+            return;
+        }
     }
 }
