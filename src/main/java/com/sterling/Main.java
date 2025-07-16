@@ -1,5 +1,10 @@
 package com.sterling;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.cloudinary.json.JSONObject;
+
 import com.sterling.Controllers.AssignedExerciseController;
 import com.sterling.Controllers.AssignedWorkoutController;
 import com.sterling.Controllers.BlogPostController;
@@ -33,8 +38,10 @@ import com.sterling.Services.WorkoutInviteService;
 import com.sterling.Utils.JwtUtil;
 
 import io.javalin.Javalin;
+import io.javalin.websocket.WsContext;
 
 public class Main {
+    private static final Map<String, WsContext> userSessions = new ConcurrentHashMap<>();
     public static void main(String[] args) {
         Javalin app = Javalin.create();
         UserDAO userDAO = new UserDAO();
@@ -91,7 +98,39 @@ public class Main {
         app.before("/users/*/gym-buddies*", Main::protectRoute);
         app.before("/messages/*", Main::protectRoute);
         app.before("/photos/*", Main::protectRoute);
-        
+    
+        //Websocket Connection
+        app.ws("/messages/{userId}", ws -> {
+            ws.onConnect(ctx -> {
+                String userId = ctx.pathParam("userId");
+                userSessions.put(userId, ctx);
+                System.out.println("WebSocket connectd: " + ctx.pathParam("userId"));
+            });
+
+            ws.onMessage(ctx -> {
+                String senderId = ctx.pathParam("userId");
+                String raw = ctx.message();
+
+                try {
+                    JSONObject json = new JSONObject(raw);
+                    String recipientId = json.getString("to");
+                    String message = json.getString("message");
+
+                    WsContext recipientSession = userSessions.get(recipientId);
+                    if(recipientSession != null && recipientSession.session.isOpen()) {
+                        recipientSession.send(senderId + ": " + message);
+                    }
+                } catch (Exception e) {
+                    System.out.println("Invalid websocket format: " + raw);
+                    ctx.send("Error: Invalid message format. Expected JSON with 'to' and 'message'.");
+                }
+            });
+            ws.onClose(ctx -> {
+                String userId = ctx.pathParam("userId");
+                userSessions.remove(userId);
+                System.out.println("WebSocket closed: " + userId);
+            });
+        });
 
         app.start(7000);
 
