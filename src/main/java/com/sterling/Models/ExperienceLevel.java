@@ -1,7 +1,7 @@
 package com.sterling.Models;
 
 public enum ExperienceLevel {
-    BEGINNGER,
+    BEGINNER,
     EXPERIENCED,
     ADVANCED,
     TRAINER,

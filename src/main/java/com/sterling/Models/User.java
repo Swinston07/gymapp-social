@@ -280,15 +280,11 @@ public class User {
         this.lifestyle = lifestyle;
     }
 
-
     public Consistency getConsistency() {
         return consistency;
     }
 
-
     public void setConsistency(Consistency consistency) {
         this.consistency = consistency;
     }
-
-    
 }

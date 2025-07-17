@@ -656,9 +656,36 @@ public class UserDAO implements UserDAOInterface {
             ResultSet rs = ps.executeQuery();
 
             while(rs.next()){
-                ExperienceLevel level = rs.getString("experience_level") != null ? ExperienceLevel.valueOf(rs.getString("experience_level")) : null;
-                Lifestyle life = rs.getString("lifestyle") != null ? Lifestyle.valueOf(rs.getString("lifestyle")) : null;
-                Consistency consist = rs.getString("consistency") != null ? Consistency.valueOf(rs.getString("consistency")) : null;
+                String expStr = rs.getString("experience_level");
+                ExperienceLevel level = null;
+                if(expStr != null && !expStr.isBlank()) {
+                    try {
+                        level = ExperienceLevel.valueOf(expStr.toUpperCase());
+                    } catch (IllegalArgumentException e) {
+                        System.err.println("Invalid experience level in DB: " + expStr);
+                    }
+                }
+
+                String lifeStr = rs.getString("lifestyle");
+                Lifestyle life = null;
+                if(lifeStr != null && !lifeStr.isBlank()) {
+                    try {
+                        life = Lifestyle.valueOf(lifeStr.toUpperCase());
+                    } catch (IllegalArgumentException e) {
+                        System.err.println("Invalid lifestyle in DB: " + lifeStr);
+                    }
+                }
+
+                String consistString = rs.getString("consistency");
+                Consistency consist = null;
+                if(consistString != null && !consistString.isBlank()) {
+                    try {
+                        consist = Consistency.valueOf(consistString.toUpperCase());
+                    } catch (IllegalArgumentException e) {
+                        System.err.println("Invalid consistency in DB: " + consistString);
+                    }
+                }
+
 
                 User user = new User(
                         rs.getInt("id"),

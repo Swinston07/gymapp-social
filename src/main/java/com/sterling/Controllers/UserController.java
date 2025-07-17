@@ -286,7 +286,8 @@ public class UserController {
     public void findUsersByFilters(Context ctx) {
         int requesterId = ctx.attribute("userId");
         int userId = Integer.parseInt(ctx.pathParam("id"));
-        String homeGym = ctx.queryParam("home_gym");
+        User user = userService.getUserById(userId);
+        String homeGym = user.getHomeGym();
         String role = ctx.queryParam("role");
         String minAgeStr = ctx.queryParam("min_age");
         String maxAgeStr = ctx.queryParam("max_age");
@@ -313,15 +314,15 @@ public class UserController {
         String consistencyStr = ctx.queryParam("consistency");
 
         try {
-            if(experienceLevelStr != null) {
+            if(experienceLevelStr != null && !experienceLevelStr.isEmpty()) {
                 experienceLevel = ExperienceLevel.valueOf(experienceLevelStr.toUpperCase());
             }
 
-            if(lifeStyleStr != null) {
+            if(lifeStyleStr != null && !lifeStyleStr.isEmpty()) {
                 lifestyle = Lifestyle.valueOf(lifeStyleStr.toUpperCase());
             }
 
-            if(consistencyStr != null) {
+            if(consistencyStr != null && !consistencyStr.isEmpty()) {
                 consistency = Consistency.valueOf(consistencyStr.toUpperCase());
             }
 
