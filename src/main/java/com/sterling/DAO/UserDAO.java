@@ -635,15 +635,15 @@ public class UserDAO implements UserDAOInterface {
         }
         if(experienceLevel != null) {
             sql.append(" AND experience_level = ?");
-            params.add(experienceLevel);
+            params.add(experienceLevel.toString());
         }
         if(lifestyle != null) {
             sql.append(" AND lifestyle = ?");
-            params.add(lifestyle);
+            params.add(lifestyle.toString());
         }
         if(consistency != null) {
             sql.append(" AND consistency = ?");
-            params.add(consistency);
+            params.add(consistency.toString());
         }
 
         try (Connection conn = DBConnection.getConnection()){

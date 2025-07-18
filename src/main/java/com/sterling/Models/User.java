@@ -1,6 +1,9 @@
 package com.sterling.Models;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -286,5 +289,74 @@ public class User {
 
     public void setConsistency(Consistency consistency) {
         this.consistency = consistency;
+    }
+
+    @JsonProperty("badges")
+    public List<String> getBadges() {
+        List<String> badges = new ArrayList<>();
+
+        //Role badge
+        if("trainer".equalsIgnoreCase(this.role) && !badges.contains("🏋️ Trainer")) {
+            badges.add("🏋️ Trainer");
+        }
+
+        //Experience Level Badge
+        if(this.experienceLevel != null) {
+            switch (this.experienceLevel) {
+                case BEGINNER: badges.add("🟢 Beginner");
+                    break;
+                case EXPERIENCED: badges.add("🔵 Experienced");
+                    break;
+                case ADVANCED: badges.add("🟣 Advanced");
+                    break;
+                case TRAINER: badges.add("🏋️ Trainer");
+                    break;
+                case PROFESSIONAL: badges.add("🏆 Pro");
+                    break;
+            
+                default:
+                    break;
+            }
+        }
+
+        //Lifestyle badge
+        if(this.lifestyle != null) {
+            switch (this.lifestyle) {
+                case SEDENTARY: badges.add("💤 Sedentary");
+                    break;
+                case ACTIVE: badges.add("🏃 Active");
+                    break;
+                case VERY_ACTIVE: badges.add("💪 Very Active");
+                    break;
+                case ATHLETE: badges.add("🥇 Athlete");
+                    break;
+            
+                default:
+                    break;
+            }
+        }
+
+        if(this.consistency != null) {
+            switch (this.consistency) {
+                case ONCE_A_WEEK: badges.add("📅 Once/Week");
+                    break;
+                case TWICE_A_WEEK: badges.add("📆 Twice/Week");
+                    break;
+                case THREE_PLUS_WEEK: badges.add("🔥 Three+/Week");
+                    break;
+                case RANDOM: badges.add("🎲 Random");
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        //Working out now!
+        if(isWorkingOut) {
+            badges.add("✅ Currently Working Out");
+        }
+
+        Collections.sort(badges);
+        return badges;
     }
 }

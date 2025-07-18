@@ -313,6 +313,13 @@ public class UserController {
         String lifeStyleStr = ctx.queryParam("lifestyle");
         String consistencyStr = ctx.queryParam("consistency");
 
+        System.out.println("==============================");
+        System.out.println("Filter params:");
+        System.out.println("experience_level: " + ctx.queryParam("experience_level"));
+        System.out.println("lifestyle: " + ctx.queryParam("lifestyle"));
+        System.out.println("consistency: " + ctx.queryParam("consistency"));
+        System.out.println("==============================");
+
         try {
             if(experienceLevelStr != null && !experienceLevelStr.isEmpty()) {
                 experienceLevel = ExperienceLevel.valueOf(experienceLevelStr.toUpperCase());
