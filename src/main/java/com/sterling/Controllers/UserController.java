@@ -84,13 +84,13 @@ public class UserController {
         int id = Integer.parseInt(ctx.pathParam("id"));
         User updatedUser = ctx.bodyAsClass(User.class);
         updatedUser.setHomeGym(ctx.formParam("homeGym"));
-        String latStr = ctx.formParam("latitude");
-        String lonStr = ctx.formParam("longitude");
+        // String latStr = ctx.formParam("latitude");
+        // String lonStr = ctx.formParam("longitude");
 
         updatedUser.setId(id);
 
-        if(latStr != null) updatedUser.setLatitude(Double.parseDouble(latStr));
-        if(lonStr != null) updatedUser.setLongitude(Double.parseDouble(lonStr));
+        // if(latStr != null) updatedUser.setLatitude(Double.parseDouble(latStr));
+        // if(lonStr != null) updatedUser.setLongitude(Double.parseDouble(lonStr));
 
         boolean success = userService.updateUser(updatedUser);
 

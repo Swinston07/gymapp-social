@@ -50,25 +50,25 @@ public class UserService {
     public boolean updateUser(User user){
         User existingUser = userDao.getUserById(user.getId());
 
-        existingUser.setAge(user.getAge());
-        existingUser.setCurrentBodyFatPercentage(user.getCurrentBodyFatPercentage());
-        existingUser.setCurrentWeight(user.getCurrentWeight());
-        existingUser.setEmail(user.getEmail());
-        existingUser.setFirstName(user.getFirstName());
-        existingUser.setHeightFeet(user.getHeightFeet());
-        existingUser.setHeightInches(user.getHeightInches());
-        existingUser.setLastName(user.getLastName());
-        existingUser.setPassword(user.getPassword());
-        existingUser.setStartBodyFatPercentage(user.getStartBodyFatPercentage());
-        existingUser.setStartWeight(user.getStartWeight());
-        existingUser.setUsername(user.getUsername());
+        if(user.getAge()!=0) existingUser.setAge(user.getAge());
+        if(user.getCurrentBodyFatPercentage()!=0) existingUser.setCurrentBodyFatPercentage(user.getCurrentBodyFatPercentage());
+        if(user.getCurrentWeight()!=0) existingUser.setCurrentWeight(user.getCurrentWeight());
+        if(user.getEmail()!=null) existingUser.setEmail(user.getEmail());
+        if(user.getFirstName()!=null) existingUser.setFirstName(user.getFirstName());
+        if(user.getHeightFeet()!=0) existingUser.setHeightFeet(user.getHeightFeet());
+        if(user.getHeightInches()!=0) existingUser.setHeightInches(user.getHeightInches());
+        if(user.getLastName()!=null) existingUser.setLastName(user.getLastName());
+        if(user.getPassword()!=null) existingUser.setPassword(user.getPassword());
+        if(user.getStartBodyFatPercentage()!=0) existingUser.setStartBodyFatPercentage(user.getStartBodyFatPercentage());
+        if(user.getStartWeight()!=0) existingUser.setStartWeight(user.getStartWeight());
+        if(user.getUsername()!=null) existingUser.setUsername(user.getUsername());
         if(user.getHomeGym()!=null) existingUser.setHomeGym(user.getHomeGym());
-        existingUser.setLatitude(user.getLatitude());
-        existingUser.setLongitude(user.getLongitude());
-        existingUser.setAboutMe(user.getAboutMe());
-        existingUser.setExperienceLevel(user.getExperienceLevel());
-        existingUser.setLifestyle(user.getLifestyle());
-        existingUser.setConsistency(user.getConsistency());
+        if(user.getLatitude()!=null) existingUser.setLatitude(user.getLatitude());
+        if(user.getLongitude()!=null) existingUser.setLongitude(user.getLongitude());
+        if(user.getAboutMe()!=null) existingUser.setAboutMe(user.getAboutMe());
+        if(user.getExperienceLevel()!=null) existingUser.setExperienceLevel(user.getExperienceLevel());
+        if(user.getLifestyle()!=null) existingUser.setLifestyle(user.getLifestyle());
+        if(user.getConsistency()!=null) existingUser.setConsistency(user.getConsistency());
 
         return userDao.updateUser(existingUser);
     }
