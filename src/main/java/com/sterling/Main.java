@@ -1,3 +1,19 @@
+/*
+ * -------------------------------------------------------------
+ * Author: Sterling Winston
+ * Date: Febuary 17, 2025
+ * 
+ * Description:
+ * This program is part of the Gym Tracker Application.
+ * It manages user registration, login, onboarding, workout tracking,
+ * gym buddy matching, and profile customization features.
+ *
+ * All rights reserved. This source code is the intellectual property
+ * of Sterling Winston. Unauthorized use, reproduction, or distribution
+ * is prohibited without written permission.
+ * -------------------------------------------------------------
+ */
+
 package com.sterling;
 
 import java.util.Map;
