@@ -28,6 +28,7 @@ import com.sterling.Controllers.ExerciseController;
 import com.sterling.Controllers.GymBuddyController;
 import com.sterling.Controllers.MessageController;
 import com.sterling.Controllers.PhotoController;
+import com.sterling.Controllers.StripeController;
 import com.sterling.Controllers.UserController;
 import com.sterling.Controllers.UserProgressController;
 import com.sterling.Controllers.WorkoutInviteController;
@@ -92,7 +93,7 @@ public class Main {
         GymBuddyController gymBuddyController = new GymBuddyController(gymBuddyService);
         MessageController messageController = new MessageController(messageService);
         PhotoController photoController = new PhotoController(photoService);
-
+    
         app.before(ctx->{
             ctx.header("Access-Control-Allow-Origin", "*");
             ctx.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
@@ -114,6 +115,7 @@ public class Main {
         app.before("/users/*/gym-buddies*", Main::protectRoute);
         app.before("/messages/*", Main::protectRoute);
         app.before("/photos/*", Main::protectRoute);
+        app.before("/create-checkout-session", Main::protectRoute);
     
         //Websocket Connection
         app.ws("/messages/{userId}", ws -> {
@@ -223,6 +225,9 @@ public class Main {
         app.get("/users/{id}/photos", photoController::getPhotosByUserId);
         app.get("/photos/{photoId}", photoController::getPhotoByPhotoId);
         app.delete("/photos/{photoId}", photoController::deletePhotoByPhotoId);
+
+        //Checkout
+        app.post("/create-checkout-session", StripeController::createCheckoutSession);
     }
 
     public static void protectRoute(io.javalin.http.Context ctx){
