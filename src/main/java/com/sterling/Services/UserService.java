@@ -57,6 +57,7 @@ public class UserService {
         if(user.getFirstName()!=null) existingUser.setFirstName(user.getFirstName());
         if(user.getHeightFeet()!=0) existingUser.setHeightFeet(user.getHeightFeet());
         if(user.getHeightInches()!=0) existingUser.setHeightInches(user.getHeightInches());
+        if(user.getRole()!=null) existingUser.setRole(user.getRole());
         if(user.getLastName()!=null) existingUser.setLastName(user.getLastName());
         if(user.getPassword()!=null) existingUser.setPassword(user.getPassword());
         if(user.getStartBodyFatPercentage()!=0) existingUser.setStartBodyFatPercentage(user.getStartBodyFatPercentage());

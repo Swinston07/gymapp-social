@@ -261,7 +261,7 @@ public class UserDAO implements UserDAOInterface {
     @Override
     public boolean updateUser(User user){
         String sql = "UPDATE users SET email = ?, username = ?, password_hash = ?, first_name = ?, last_name = ?, age = ?, start_weight = ?, start_body_fat_percentage = ?, feet = ?, inches = ?, current_weight = ?, current_body_fat_percentage = ?, home_gym = ?, latitude = ?, longitude = ?, " +
-        "about_me = ?, experience_level = ?, lifestyle = ?, consistency = ?  WHERE id = ?";
+        "about_me = ?, experience_level = ?, lifestyle = ?, consistency = ?, role = ?  WHERE id = ?";
         boolean updated = false;
 
         try(Connection conn = DBConnection.getConnection()){
@@ -286,7 +286,8 @@ public class UserDAO implements UserDAOInterface {
             ps.setString(17, user.getExperienceLevel() != null ? user.getExperienceLevel().toString() : null);
             ps.setString(18, user.getLifestyle() != null ? user.getLifestyle().toString() : null);
             ps.setString(19, user.getConsistency() != null ? user.getConsistency().toString() : null);
-            ps.setInt(20, user.getId());
+            ps.setString(20, user.getRole());
+            ps.setInt(21, user.getId());
 
             int rowsAffected = ps.executeUpdate();
             updated = rowsAffected > 0;

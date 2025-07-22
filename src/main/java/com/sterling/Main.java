@@ -116,6 +116,7 @@ public class Main {
         app.before("/messages/*", Main::protectRoute);
         app.before("/photos/*", Main::protectRoute);
         app.before("/create-checkout-session", Main::protectRoute);
+        //app.before("/stripe/webhook", Main::protectRoute);
     
         //Websocket Connection
         app.ws("/messages/{userId}", ws -> {
@@ -228,6 +229,7 @@ public class Main {
 
         //Checkout
         app.post("/create-checkout-session", StripeController::createCheckoutSession);
+        app.post("/stripe/webhook", StripeController::handleWebhook);
     }
 
     public static void protectRoute(io.javalin.http.Context ctx){
