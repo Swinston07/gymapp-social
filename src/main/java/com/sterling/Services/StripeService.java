@@ -17,20 +17,25 @@ public class StripeService {
         Map<String, String> metadata = new HashMap<>();
         metadata.put("user_id", String.valueOf(userId));
 
-
-        SessionCreateParams params =
-            SessionCreateParams.builder()
-                .setMode(SessionCreateParams.Mode.SUBSCRIPTION)
-                .setSuccessUrl("http://localhost:5173/success?session_id={CHECKOUT_SESSION_ID}")
-                .setCancelUrl("http://localhost:5173/cancel")
-                .addLineItem(
-                    SessionCreateParams.LineItem.builder()
-                        .setQuantity(1L)
-                        .setPrice(PRICE_ID)
-                        .build()
-                        )
-                    .putAllMetadata(metadata)
-                    .build();
+        // Create the checkout session
+        SessionCreateParams params = SessionCreateParams.builder()
+            .setMode(SessionCreateParams.Mode.SUBSCRIPTION)
+            .setSuccessUrl("http://localhost:5173/success?session_id={CHECKOUT_SESSION_ID}")
+            .setCancelUrl("http://localhost:5173/cancel")
+            .addLineItem(
+                SessionCreateParams.LineItem.builder()
+                    .setQuantity(1L)
+                    .setPrice(PRICE_ID)
+                    .build()
+            )
+            .setSubscriptionData(
+                SessionCreateParams.SubscriptionData.builder()
+                    .putAllMetadata(metadata)  // ✅ attach user_id to the subscription
+                    .build()
+            )
+            .putAllMetadata(metadata) // also attaches to session (not required but useful for checkout.session.completed)
+            .build();
+            
             Session session = Session.create(params);
             return session;
     }

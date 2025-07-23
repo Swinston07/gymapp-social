@@ -11,8 +11,13 @@ import com.sterling.Services.UserService;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Event;
+import com.stripe.model.Invoice;
+import com.stripe.model.Subscription;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import io.javalin.http.Context;
 
@@ -41,8 +46,15 @@ public class StripeController {
 
         System.out.println("📨 [Stripe] Event Type: " + event.getType());
 
-        if ("checkout.session.completed".equals(event.getType())) {
-            handleCheckoutCompleted(event);
+        switch (event.getType()) {
+            case "checout.session.completed":
+                handleCheckoutCompleted(event);
+                break;
+            case "invoice.payment_succeeded":
+                handleInvoicePaid(event);
+                break;
+            default:
+                break;
         }
 
         ctx.status(200);
@@ -93,6 +105,76 @@ public class StripeController {
 
         } else {
             System.err.println("⚠️  [Webhook] Missing user_id in metadata.");
+        }
+    }
+
+    public static void handleInvoicePaid(Event event) {
+        System.out.println("============================");
+        System.out.println("Handling invoice_payment.paid");
+        System.out.println("============================");
+        
+        try {
+            String rawJson = event.getDataObjectDeserializer()
+                                .getRawJson();
+            
+            if (rawJson == null || rawJson.isBlank()) {
+                System.err.println("❌ [Webhook] Raw JSON is null.");
+                return;
+        }
+
+            JsonObject json = JsonParser.parseString(rawJson).getAsJsonObject();
+            String invoiceId = json.get("id").getAsString();
+            System.out.println("📦 Raw Invoice Payload: " + invoiceId);
+            System.out.println("🔍 Retrieving invoice by ID: " + invoiceId);
+            Invoice invoice = Invoice.retrieve(invoiceId);
+            //String customerId = invoice.getCustomer(); //Stripe customer id
+            String subscriptionId = invoice.getSubscription();
+
+            if(subscriptionId == null) {
+                System.err.println("❌ Subscription ID is null in the invoice.");
+                return;
+            }
+
+            System.out.println("====================================");
+            System.out.println("✅ Subscription ID: " + subscriptionId);
+            System.out.println("====================================");
+
+            Subscription subscription = Subscription.retrieve(invoice.getSubscription());
+
+            String userIdStr = subscription.getMetadata().get("user_id");
+
+            if(userIdStr != null) {
+                int userId = Integer.parseInt(userIdStr);
+                UserDAO userDao = new UserDAO();
+                UserService userService = new UserService(userDao);
+                User user = userService.getUserById(userId);
+
+                if(user != null) {
+                    System.out.println("============================");
+                    System.out.println("Found user: " + user.getUsername());
+                    System.out.println("============================");
+
+                    user.setRole("trainer");
+
+                    boolean updated = userService.updateUser(user);
+
+                    if(updated) {
+                        System.out.println("============================");
+                        System.out.println("Updated user to trainer");
+                        System.out.println("============================");
+                    } else {
+                        System.out.println("============================");
+                        System.err.println("Failed to update user");
+                        System.out.println("============================");
+                    }
+                } else {
+                    System.err.println("User not found");
+                }
+            } else {
+                System.err.println("No user_id in metadata");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
