@@ -43,6 +43,10 @@ public class UserService {
         return userDao.getUserById(id);
     }
 
+    public User getUserByUsername(String username) {
+        return userDao.getUserByUsername(username);
+    }
+
     public List<User> getAllUsers(){
         return userDao.getAllUsers();
     }
