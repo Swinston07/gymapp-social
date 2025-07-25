@@ -96,7 +96,8 @@ public class UserDAO implements UserDAOInterface {
                     rs.getString("about_me"),
                     experienceLevel,
                     lifestyle,
-                    consistency
+                    consistency,
+                    rs.getBoolean("is_premium")
                 );
 
                 return user;
@@ -147,7 +148,8 @@ public class UserDAO implements UserDAOInterface {
                     rs.getString("about_me"),
                     experienceLevel,
                     lifestyle,
-                    consistency
+                    consistency,
+                    rs.getBoolean("is_premium")
                 );
 
                 return user;
@@ -198,7 +200,8 @@ public class UserDAO implements UserDAOInterface {
                     rs.getString("about_me"),
                     experienceLevel,
                     lifestyle,
-                    consistency
+                    consistency,
+                    rs.getBoolean("is_premium")
                 );
                 return user;
             }
@@ -225,29 +228,30 @@ public class UserDAO implements UserDAOInterface {
 
                 User user = new User(
                         rs.getInt("id"),
-                        rs.getString("email"),
-                        rs.getString("username"),
-                        rs.getString("password_hash"),
-                        rs.getString("first_name"),
-                        rs.getString("last_name"),
-                        rs.getInt("age"),
-                        rs.getFloat("start_weight"),
-                        rs.getFloat("start_body_fat_percentage"),
-                        rs.getInt("feet"),
-                        rs.getInt("inches"),
-                        rs.getFloat("current_weight"),
-                        rs.getFloat("current_body_fat_percentage"),
-                        rs.getTimestamp("created_on"),
-                        rs.getString("role"),
-                        rs.getInt("trainer_id"),
-                        rs.getString("home_gym"),
-                        rs.getDouble("latitude"),
-                        rs.getDouble("longitude"),
-                        rs.getBoolean("is_working_out"),
-                        rs.getString("about_me"),
-                        experienceLevel,
-                        lifestyle,
-                        consistency
+                    rs.getString("email"),
+                    rs.getString("username"),
+                    rs.getString("password_hash"),
+                    rs.getString("first_name"),
+                    rs.getString("last_name"),
+                    rs.getInt("age"),
+                    rs.getFloat("start_weight"),
+                    rs.getFloat("start_body_fat_percentage"),
+                    rs.getInt("feet"),
+                    rs.getInt("inches"),
+                    rs.getFloat("current_weight"),
+                    rs.getFloat("current_body_fat_percentage"),
+                    rs.getTimestamp("created_on"),
+                    rs.getString("role"),
+                    rs.getInt("trainer_id"),
+                    rs.getString("home_gym"),
+                    rs.getDouble("latitude"),
+                    rs.getDouble("longitude"),
+                    rs.getBoolean("is_working_out"),
+                    rs.getString("about_me"),
+                    experienceLevel,
+                    lifestyle,
+                    consistency,
+                    rs.getBoolean("is_premium")
                     );
                 users.add(user);
             }
@@ -261,7 +265,7 @@ public class UserDAO implements UserDAOInterface {
     @Override
     public boolean updateUser(User user){
         String sql = "UPDATE users SET email = ?, username = ?, password_hash = ?, first_name = ?, last_name = ?, age = ?, start_weight = ?, start_body_fat_percentage = ?, feet = ?, inches = ?, current_weight = ?, current_body_fat_percentage = ?, home_gym = ?, latitude = ?, longitude = ?, " +
-        "about_me = ?, experience_level = ?, lifestyle = ?, consistency = ?, role = ?  WHERE id = ?";
+        "about_me = ?, experience_level = ?, lifestyle = ?, consistency = ?, role = ?, is_premium = ?  WHERE id = ?";
         boolean updated = false;
 
         try(Connection conn = DBConnection.getConnection()){
@@ -287,7 +291,8 @@ public class UserDAO implements UserDAOInterface {
             ps.setString(18, user.getLifestyle() != null ? user.getLifestyle().toString() : null);
             ps.setString(19, user.getConsistency() != null ? user.getConsistency().toString() : null);
             ps.setString(20, user.getRole());
-            ps.setInt(21, user.getId());
+            ps.setBoolean(21, user.isPremium());
+            ps.setInt(22, user.getId());
 
             int rowsAffected = ps.executeUpdate();
             updated = rowsAffected > 0;
@@ -376,29 +381,30 @@ public class UserDAO implements UserDAOInterface {
 
                 User client = new User(
                         rs.getInt("id"),
-                        rs.getString("email"),
-                        rs.getString("username"),
-                        rs.getString("password_hash"),
-                        rs.getString("first_name"),
-                        rs.getString("last_name"),
-                        rs.getInt("age"),
-                        rs.getFloat("start_weight"),
-                        rs.getFloat("start_body_fat_percentage"),
-                        rs.getInt("feet"),
-                        rs.getInt("inches"),
-                        rs.getFloat("current_weight"),
-                        rs.getFloat("current_body_fat_percentage"),
-                        rs.getTimestamp("created_on"),
-                        rs.getString("role"),
-                        rs.getInt("trainer_id"),
-                        rs.getString("home_gym"),
-                        rs.getDouble("latitude"),
-                        rs.getDouble("longitude"),
-                        rs.getBoolean("is_working_out"),
-                        rs.getString("about_me"),
-                        experienceLevel,
-                        lifestyle,
-                        consistency
+                    rs.getString("email"),
+                    rs.getString("username"),
+                    rs.getString("password_hash"),
+                    rs.getString("first_name"),
+                    rs.getString("last_name"),
+                    rs.getInt("age"),
+                    rs.getFloat("start_weight"),
+                    rs.getFloat("start_body_fat_percentage"),
+                    rs.getInt("feet"),
+                    rs.getInt("inches"),
+                    rs.getFloat("current_weight"),
+                    rs.getFloat("current_body_fat_percentage"),
+                    rs.getTimestamp("created_on"),
+                    rs.getString("role"),
+                    rs.getInt("trainer_id"),
+                    rs.getString("home_gym"),
+                    rs.getDouble("latitude"),
+                    rs.getDouble("longitude"),
+                    rs.getBoolean("is_working_out"),
+                    rs.getString("about_me"),
+                    experienceLevel,
+                    lifestyle,
+                    consistency,
+                    rs.getBoolean("is_premium")
                     );
                 clientList.add(client);
             }
@@ -470,7 +476,7 @@ public class UserDAO implements UserDAOInterface {
                 Consistency consistency = rs.getString("consistency") != null ? Consistency.valueOf(rs.getString("consistency")) : null;
 
                 User match = new User(
-                        rs.getInt("id"),
+                    rs.getInt("id"),
                     rs.getString("email"),
                     rs.getString("username"),
                     rs.getString("password_hash"),
@@ -493,7 +499,8 @@ public class UserDAO implements UserDAOInterface {
                     rs.getString("about_me"),
                     experienceLevel,
                     lifestyle,
-                    consistency
+                    consistency,
+                    rs.getBoolean("is_premium")
                 );
                 matches.add(match);
             }
@@ -523,29 +530,30 @@ public class UserDAO implements UserDAOInterface {
 
                 User user = new User(
                         rs.getInt("id"),
-                        rs.getString("email"),
-                        rs.getString("username"),
-                        rs.getString("password_hash"),
-                        rs.getString("first_name"),
-                        rs.getString("last_name"),
-                        rs.getInt("age"),
-                        rs.getFloat("start_weight"),
-                        rs.getFloat("start_body_fat_percentage"),
-                        rs.getInt("feet"),
-                        rs.getInt("inches"),
-                        rs.getFloat("current_weight"),
-                        rs.getFloat("current_body_fat_percentage"),
-                        rs.getTimestamp("created_on"),
-                        rs.getString("role"),
-                        rs.getInt("trainer_id"),
-                        rs.getString("home_gym"),
-                        rs.getDouble("latitude"),
-                        rs.getDouble("longitude"),
-                        rs.getBoolean("is_working_out"),
-                        rs.getString("about_me"),
-                        experienceLevel,
-                        lifestyle,
-                        consistency
+                    rs.getString("email"),
+                    rs.getString("username"),
+                    rs.getString("password_hash"),
+                    rs.getString("first_name"),
+                    rs.getString("last_name"),
+                    rs.getInt("age"),
+                    rs.getFloat("start_weight"),
+                    rs.getFloat("start_body_fat_percentage"),
+                    rs.getInt("feet"),
+                    rs.getInt("inches"),
+                    rs.getFloat("current_weight"),
+                    rs.getFloat("current_body_fat_percentage"),
+                    rs.getTimestamp("created_on"),
+                    rs.getString("role"),
+                    rs.getInt("trainer_id"),
+                    rs.getString("home_gym"),
+                    rs.getDouble("latitude"),
+                    rs.getDouble("longitude"),
+                    rs.getBoolean("is_working_out"),
+                    rs.getString("about_me"),
+                    experienceLevel,
+                    lifestyle,
+                    consistency,
+                    rs.getBoolean("is_premium")
                     );
                 userList.add(user);
             }
@@ -578,29 +586,30 @@ public class UserDAO implements UserDAOInterface {
 
                 User user = new User(
                         rs.getInt("id"),
-                        rs.getString("email"),
-                        rs.getString("username"),
-                        rs.getString("password_hash"),
-                        rs.getString("first_name"),
-                        rs.getString("last_name"),
-                        rs.getInt("age"),
-                        rs.getFloat("start_weight"),
-                        rs.getFloat("start_body_fat_percentage"),
-                        rs.getInt("feet"),
-                        rs.getInt("inches"),
-                        rs.getFloat("current_weight"),
-                        rs.getFloat("current_body_fat_percentage"),
-                        rs.getTimestamp("created_on"),
-                        rs.getString("role"),
-                        rs.getInt("trainer_id"),
-                        rs.getString("home_gym"),
-                        rs.getDouble("latitude"),
-                        rs.getDouble("longitude"),
-                        rs.getBoolean("is_working_out"),
-                        rs.getString("about_me"),
-                        experienceLevel,
-                        lifestyle,
-                        consistency
+                    rs.getString("email"),
+                    rs.getString("username"),
+                    rs.getString("password_hash"),
+                    rs.getString("first_name"),
+                    rs.getString("last_name"),
+                    rs.getInt("age"),
+                    rs.getFloat("start_weight"),
+                    rs.getFloat("start_body_fat_percentage"),
+                    rs.getInt("feet"),
+                    rs.getInt("inches"),
+                    rs.getFloat("current_weight"),
+                    rs.getFloat("current_body_fat_percentage"),
+                    rs.getTimestamp("created_on"),
+                    rs.getString("role"),
+                    rs.getInt("trainer_id"),
+                    rs.getString("home_gym"),
+                    rs.getDouble("latitude"),
+                    rs.getDouble("longitude"),
+                    rs.getBoolean("is_working_out"),
+                    rs.getString("about_me"),
+                    experienceLevel,
+                    lifestyle,
+                    consistency,
+                    rs.getBoolean("is_premium")
                     );
                 userList.add(user);
             }
@@ -712,7 +721,8 @@ public class UserDAO implements UserDAOInterface {
                         rs.getString("about_me"),
                         level,
                         life,
-                        consist
+                        consist,
+                        rs.getBoolean("is_premium")
                     );
                 users.add(user);
             }
@@ -720,5 +730,22 @@ public class UserDAO implements UserDAOInterface {
             e.printStackTrace();
         }
         return users;
+    }
+
+    @Override
+    public boolean updatePremiumStatus(int userId, boolean status) {
+        String sql = "UPDATE users SET is_premium = ? WHERE id = ?";
+
+        try (Connection conn = DBConnection.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setInt(1, userId);
+            ps.setBoolean(2, status);
+
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

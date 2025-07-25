@@ -74,6 +74,7 @@ public class UserService {
         if(user.getExperienceLevel()!=null) existingUser.setExperienceLevel(user.getExperienceLevel());
         if(user.getLifestyle()!=null) existingUser.setLifestyle(user.getLifestyle());
         if(user.getConsistency()!=null) existingUser.setConsistency(user.getConsistency());
+        if((Boolean) user.isPremium() != null) existingUser.setPremium(user.isPremium());
 
         return userDao.updateUser(existingUser);
     }
@@ -157,5 +158,14 @@ public class UserService {
 
     public List<User> findUsersByFilters(String homeGym, String role, Integer minAge, Integer maxAge, ExperienceLevel experienceLevel, Lifestyle lifestyle, Consistency consistency, int userId) {
         return userDao.findUsersByFilters(homeGym, role, minAge, maxAge, experienceLevel, lifestyle, consistency, userId);
+    }
+
+    public boolean updatePremiumStatus(int userId, boolean staus) {
+        User user = userDao.getUserById(userId);
+    if (user != null) {
+        user.setPremium(staus);
+        return userDao.updateUser(user); // must persist change
+    }
+    return false;
     }
 }

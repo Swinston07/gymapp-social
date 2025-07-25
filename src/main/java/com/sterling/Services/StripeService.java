@@ -11,11 +11,12 @@ import com.stripe.param.checkout.SessionCreateParams;
 public class StripeService {
     private static final String PRICE_ID = "price_1Rmz7BGbF0aoNlGnma1E7msm";
 
-    public Session createSubscriptionSession (int userId) throws StripeException {
+    public Session createSubscriptionSession (int userId, String subscriptionType, String priceId) throws StripeException {
         Stripe.apiKey = "sk_test_51RmyteGbF0aoNlGn45SzqCexqBMdAWbx3zGz5rP56KfhuatbtqUMatiXuOb5cawDQxrLJGTCBZXRAEI9mPZv2aTd00WMMG7DYY";
 
         Map<String, String> metadata = new HashMap<>();
         metadata.put("user_id", String.valueOf(userId));
+        metadata.put("subscription_type", subscriptionType);
 
         // Create the checkout session
         SessionCreateParams params = SessionCreateParams.builder()
@@ -25,7 +26,7 @@ public class StripeService {
             .addLineItem(
                 SessionCreateParams.LineItem.builder()
                     .setQuantity(1L)
-                    .setPrice(PRICE_ID)
+                    .setPrice(priceId)
                     .build()
             )
             .setSubscriptionData(

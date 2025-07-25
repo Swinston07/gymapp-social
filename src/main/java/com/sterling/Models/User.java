@@ -49,6 +49,8 @@ public class User {
     private ExperienceLevel experienceLevel;
     private Lifestyle lifestyle;
     private Consistency consistency;
+    @JsonProperty("is_premium")
+    private boolean isPremium;
 
     public User() {
     }
@@ -58,7 +60,7 @@ public class User {
             float startWeight, float startBodyFatPercentage, int heightFeet, int heightInches, float currentWeight,
             float currentBodyFatPercentage, Timestamp createdOn, String role, Integer trainerId, String homeGym,
             Double latitude, Double longitude, boolean isWorkingOut, String aboutMe, ExperienceLevel experienceLevel,
-            Lifestyle lifestyle, Consistency consistency) {
+            Lifestyle lifestyle, Consistency consistency, boolean isPremium) {
         this.id = id;
         this.email = email;
         this.username = username;
@@ -83,6 +85,7 @@ public class User {
         this.experienceLevel = experienceLevel;
         this.lifestyle = lifestyle;
         this.consistency = consistency;
+        this.isPremium = isPremium;
     }
 
     public User(int id, String username, String firstName, String lastName) {
@@ -289,6 +292,14 @@ public class User {
 
     public void setConsistency(Consistency consistency) {
         this.consistency = consistency;
+    }
+
+    public boolean isPremium() {
+        return isPremium;
+    }
+
+    public void setPremium(boolean isPremium) {
+        this.isPremium = isPremium;
     }
 
     @JsonProperty("badges")

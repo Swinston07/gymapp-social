@@ -57,12 +57,10 @@ public class WorkoutInviteDAO implements WorkoutInviteDAOInterface {
                         rs.getTimestamp("responded_at"))
                 );
             }
-
-            return invites;
         } catch (SQLException e){
             e.printStackTrace();
         }
-        return null;
+        return invites;
     }
 
     @Override

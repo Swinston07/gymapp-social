@@ -51,7 +51,7 @@ public class WorkoutInviteService {
         }
     }
 
-    public List<WorkoutInvite> getInviteForUser(int userId){
+    public List<WorkoutInvite> getInvitesForUser(int userId){
         return workoutInviteDao.getInvitesForUser(userId);
     }
 

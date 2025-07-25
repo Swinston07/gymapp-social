@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.sterling.DAO.UserDAO;
-import com.sterling.Models.User;
 import com.sterling.Services.StripeService;
 import com.sterling.Services.UserService;
 import com.stripe.exception.SignatureVerificationException;
@@ -65,128 +64,91 @@ public class StripeController {
         Session session = (Session) event.getDataObjectDeserializer().getObject().orElse(null);
 
         if (session == null) {
-            System.err.println("❌ [Webhook] Session deserialization failed.");
+            System.err.println("❌ Session is null.");
             return;
         }
 
-        System.out.println("📦 [Webhook] Session ID: " + session.getId());
-        System.out.println("📦 [Webhook] Metadata: " + session.getMetadata());
-
         Map<String, String> metadata = session.getMetadata();
-        if (metadata != null && metadata.containsKey("user_id")) {
-            String userIdStr = metadata.get("user_id");
-            System.out.println("🔍 [Webhook] Extracted user_id: " + userIdStr);
+        String userIdStr = metadata.get("user_id");
+        String type = metadata.get("subscription_type");
 
-            try {
-                int userId = Integer.parseInt(userIdStr);
-                UserDAO userDao = new UserDAO();
-                UserService userService = new UserService(userDao);
-                User user = userService.getUserById(userId);
-
-                if (user != null) {
-                    System.out.println("👤 [Webhook] Found user: " + user.getUsername());
-                    boolean updated = userService.updateUserRole(userId, "trainer");
-
-                    if (updated) {
-                        System.out.println("✅ [Webhook] User " + user.getUsername() + " upgraded to TRAINER.");
-                    } else {
-                        System.err.println("⚠️  [Webhook] Failed to update user role.");
-                    }
-                } else {
-                    System.err.println("❌ [Webhook] No user found with ID: " + userId);
-                }
-
-            } catch (NumberFormatException e) {
-                System.err.println("❌ [Webhook] Invalid user ID format: " + userIdStr);
-            } catch (Exception e) {
-                System.err.println("❌ [Webhook] Error processing: " + e.getMessage());
-                e.printStackTrace();
-            }
-
-        } else {
-            System.err.println("⚠️  [Webhook] Missing user_id in metadata.");
+        if (userIdStr == null || type == null) {
+            System.err.println("❌ Missing user_id or subscription_type.");
+            return;
         }
-    }
 
-    public static void handleInvoicePaid(Event event) {
-        System.out.println("============================");
-        System.out.println("Handling invoice_payment.paid");
-        System.out.println("============================");
-        
         try {
-            String rawJson = event.getDataObjectDeserializer()
-                                .getRawJson();
-            
-            if (rawJson == null || rawJson.isBlank()) {
-                System.err.println("❌ [Webhook] Raw JSON is null.");
-                return;
-        }
+            int userId = Integer.parseInt(userIdStr);
+            UserDAO userDao = new UserDAO();
+            UserService userService = new UserService(userDao);
 
-            JsonObject json = JsonParser.parseString(rawJson).getAsJsonObject();
-            String invoiceId = json.get("id").getAsString();
-            System.out.println("📦 Raw Invoice Payload: " + invoiceId);
-            System.out.println("🔍 Retrieving invoice by ID: " + invoiceId);
-            Invoice invoice = Invoice.retrieve(invoiceId);
-            //String customerId = invoice.getCustomer(); //Stripe customer id
-            String subscriptionId = invoice.getSubscription();
-
-            if(subscriptionId == null) {
-                System.err.println("❌ Subscription ID is null in the invoice.");
-                return;
+            if ("premium".equalsIgnoreCase(type)) {
+                boolean updated = userService.updatePremiumStatus(userId, true);
+                System.out.println(updated ? "✅ User upgraded to PREMIUM" : "⚠️ Failed to upgrade user to PREMIUM");
+            } else if ("trainer".equalsIgnoreCase(type)) {
+                boolean updated = userService.updateUserRole(userId, "trainer");
+                System.out.println(updated ? "✅ User upgraded to TRAINER" : "⚠️ Failed to upgrade user to TRAINER");
             }
 
-            System.out.println("====================================");
-            System.out.println("✅ Subscription ID: " + subscriptionId);
-            System.out.println("====================================");
-
-            Subscription subscription = Subscription.retrieve(invoice.getSubscription());
-
-            String userIdStr = subscription.getMetadata().get("user_id");
-
-            if(userIdStr != null) {
-                int userId = Integer.parseInt(userIdStr);
-                UserDAO userDao = new UserDAO();
-                UserService userService = new UserService(userDao);
-                User user = userService.getUserById(userId);
-
-                if(user != null) {
-                    System.out.println("============================");
-                    System.out.println("Found user: " + user.getUsername());
-                    System.out.println("============================");
-
-                    user.setRole("trainer");
-
-                    boolean updated = userService.updateUser(user);
-
-                    if(updated) {
-                        System.out.println("============================");
-                        System.out.println("Updated user to trainer");
-                        System.out.println("============================");
-                    } else {
-                        System.out.println("============================");
-                        System.err.println("Failed to update user");
-                        System.out.println("============================");
-                    }
-                } else {
-                    System.err.println("User not found");
-                }
-            } else {
-                System.err.println("No user_id in metadata");
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+
+    public static void handleInvoicePaid(Event event) {
+        try {
+            String rawJson = event.getDataObjectDeserializer().getRawJson();
+            if (rawJson == null || rawJson.isBlank()) return;
+
+            JsonObject json = JsonParser.parseString(rawJson).getAsJsonObject();
+            String invoiceId = json.get("id").getAsString();
+            Invoice invoice = Invoice.retrieve(invoiceId);
+            Subscription subscription = Subscription.retrieve(invoice.getSubscription());
+
+            String userIdStr = subscription.getMetadata().get("user_id");
+            String type = subscription.getMetadata().get("subscription_type");
+
+            if (userIdStr == null || type == null) return;
+
+            int userId = Integer.parseInt(userIdStr);
+            UserDAO userDao = new UserDAO();
+            UserService userService = new UserService(userDao);
+
+            if ("premium".equalsIgnoreCase(type)) {
+                boolean updated = userService.updatePremiumStatus(userId, true);
+                System.out.print("==============================");
+                System.out.print("userId: " + userId);
+                System.out.print("updated: " + updated);
+                System.out.print("==============================");
+
+
+                System.out.println(updated ? "✅ Invoice → Upgraded to PREMIUM" : "⚠️ Invoice → Failed to upgrade to PREMIUM");
+            } else if ("trainer".equalsIgnoreCase(type)) {
+                boolean updated = userService.updateUserRole(userId, "trainer");
+                System.out.println(updated ? "✅ Invoice → Upgraded to TRAINER" : "⚠️ Invoice → Failed to upgrade to TRAINER");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     // ✅ Checkout Session Creation
     public static void createCheckoutSession(Context ctx) {
         try {
             int userId = ctx.attribute("userId");
-            Session session = stripeService.createSubscriptionSession(userId);
+
+            // 🆕 Parse JSON body
+            String subscriptionType = ctx.bodyAsClass(Map.class).get("subscriptionType").toString();
+            String priceId = ctx.bodyAsClass(Map.class).get("priceId").toString();
+
+            Session session = stripeService.createSubscriptionSession(userId, subscriptionType, priceId);
 
             System.out.println("\n\n💳 ===============================");
             System.out.println("🚀  Creating Stripe Checkout Session");
             System.out.println("👤  User ID: " + userId);
+            System.out.println("🔖  Subscription Type: " + subscriptionType);
+            System.out.println("💰  Price ID: " + priceId);
             System.out.println("💳  Session URL: " + session.getUrl());
             System.out.println("💳 ===============================");
 
@@ -198,6 +160,10 @@ public class StripeController {
         } catch (StripeException e) {
             e.printStackTrace();
             ctx.status(500).json(Collections.singletonMap("error", e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            ctx.status(400).json(Collections.singletonMap("error", "Invalid request body"));
         }
     }
+
 }

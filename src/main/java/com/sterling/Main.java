@@ -89,7 +89,7 @@ public class Main {
         AssignedExerciseController assignedExerciseController = new AssignedExerciseController(assignedExerciseService, userService, assignedWorkoutService);
         BlogPostController blogPostController = new BlogPostController(blogPostService);
         UserProgressController userProgressController = new UserProgressController(userProgressService);
-        WorkoutInviteController workoutInviteController = new WorkoutInviteController(workoutInviteService);
+        WorkoutInviteController workoutInviteController = new WorkoutInviteController(workoutInviteService, userService);
         GymBuddyController gymBuddyController = new GymBuddyController(gymBuddyService);
         MessageController messageController = new MessageController(messageService);
         PhotoController photoController = new PhotoController(photoService);

@@ -5,16 +5,20 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
+import com.sterling.Models.User;
 import com.sterling.Models.WorkoutInvite;
+import com.sterling.Services.UserService;
 import com.sterling.Services.WorkoutInviteService;
 
 import io.javalin.http.Context;
 
 public class WorkoutInviteController {
     private WorkoutInviteService workoutInviteService;
+    private UserService userService;
 
-    public WorkoutInviteController(WorkoutInviteService workoutInviteService){
+    public WorkoutInviteController(WorkoutInviteService workoutInviteService, UserService userService){
         this.workoutInviteService = workoutInviteService;
+        this.userService = userService;
     }
 
     public void sendInvite(Context ctx) {
@@ -46,7 +50,19 @@ public class WorkoutInviteController {
             return;
         }
 
-        List<WorkoutInvite> invites = workoutInviteService.getInviteForUser(userId);
+        User user = userService.getUserById(userId);
+
+        if(user == null) {
+            ctx.status(404).result("User not found");
+            return;
+        }
+
+        if(!user.isPremium()) {
+            ctx.status(403).result("Premium membership required to view invites.");
+            return;
+        }
+
+        List<WorkoutInvite> invites = workoutInviteService.getInvitesForUser(userId);
         ctx.status(200).json(invites);
     }
 

@@ -24,4 +24,5 @@ public interface UserDAOInterface {
     List<User> findUsersByHomeGym(String homeGym, int userId);
     List<User> findUsersByHomeGymAndRole(String homeGym, String role, int userId);
     List<User> findUsersByFilters(String homeGym, String role, Integer minAge, Integer maxAge, ExperienceLevel experienceLevel, Lifestyle lifestyle, Consistency consistency, int currentUserId);
+    boolean updatePremiumStatus(int useId, boolean status);
 }

@@ -340,4 +340,26 @@ public class UserController {
             return;
         }
     }
+
+    public void updatePremiumStatus(Context ctx) {
+        int requesterId = ctx.attribute("userId");
+        int userId = Integer.parseInt(ctx.pathParam("id"));
+
+        if(requesterId != userId) {
+            ctx.status(403).result("Unauthorized to update another user's premium status");
+            return;
+        }
+
+        Map<String, Object> body = ctx.bodyAsClass(Map.class);
+        Boolean isPremium = (Boolean) body.get("is_premium");
+
+        boolean updated = userService.updatePremiumStatus(userId, isPremium);
+
+        if(updated) {
+            ctx.status(200).result("Premium status successfully updated");
+            return;
+        } else {
+            ctx.status(500).result("Failed to update premium status");
+        }
+    }
 }
