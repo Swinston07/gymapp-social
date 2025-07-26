@@ -75,6 +75,7 @@ public class UserService {
         if(user.getLifestyle()!=null) existingUser.setLifestyle(user.getLifestyle());
         if(user.getConsistency()!=null) existingUser.setConsistency(user.getConsistency());
         if((Boolean) user.isPremium() != null) existingUser.setPremium(user.isPremium());
+        if(user.getStripeCustomerId() != null && !user.getStripeCustomerId().isBlank()) existingUser.setStripeCustomerId(user.getStripeCustomerId());
 
         return userDao.updateUser(existingUser);
     }
@@ -167,5 +168,13 @@ public class UserService {
         return userDao.updateUser(user); // must persist change
     }
     return false;
+    }
+
+    public String getStripeCustomerIdByUserId (int userId) {
+        return userDao.getStripeCustomerIdByUserId(userId);
+    }
+
+    public boolean updateStripeCustomerId(int userId, String customerId) {
+        return userDao.updateStripeCustomerId(userId, customerId);
     }
 }

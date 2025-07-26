@@ -19,7 +19,7 @@ import com.sterling.Interfaces.UserDAOInterface;
 public class UserDAO implements UserDAOInterface {
     @Override
     public void addUser(User user){
-        String sql = "INSERT INTO users (email, username, password_hash, first_name, last_name, age, start_weight, start_body_fat_percentage, feet, inches, home_gym, latitude, longitude, experience_level, lifestyle, consistency) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (email, username, password_hash, first_name, last_name, age, start_weight, start_body_fat_percentage, feet, inches, home_gym, latitude, longitude, experience_level, lifestyle, consistency, stripe_customer_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try(Connection conn = DBConnection.getConnection()){
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -49,6 +49,7 @@ public class UserDAO implements UserDAOInterface {
             ps.setString(14, user.getExperienceLevel() != null ? user.getExperienceLevel().toString() : null);
             ps.setString(15, user.getLifestyle() != null ? user.getLifestyle().toString() : null);
             ps.setString(16, user.getConsistency() != null ? user.getConsistency().toString() : null);
+            ps.setString(17, user.getStripeCustomerId());
 
             ps.executeUpdate();
         }
@@ -97,7 +98,8 @@ public class UserDAO implements UserDAOInterface {
                     experienceLevel,
                     lifestyle,
                     consistency,
-                    rs.getBoolean("is_premium")
+                    rs.getBoolean("is_premium"),
+                    rs.getString("stripe_customer_id")
                 );
 
                 return user;
@@ -149,7 +151,8 @@ public class UserDAO implements UserDAOInterface {
                     experienceLevel,
                     lifestyle,
                     consistency,
-                    rs.getBoolean("is_premium")
+                    rs.getBoolean("is_premium"),
+                    rs.getString("stripe_customer_id")
                 );
 
                 return user;
@@ -201,7 +204,8 @@ public class UserDAO implements UserDAOInterface {
                     experienceLevel,
                     lifestyle,
                     consistency,
-                    rs.getBoolean("is_premium")
+                    rs.getBoolean("is_premium"),
+                    rs.getString("stripe_customer_id")
                 );
                 return user;
             }
@@ -251,8 +255,9 @@ public class UserDAO implements UserDAOInterface {
                     experienceLevel,
                     lifestyle,
                     consistency,
-                    rs.getBoolean("is_premium")
-                    );
+                    rs.getBoolean("is_premium"),
+                    rs.getString("stripe_customer_id")
+                );
                 users.add(user);
             }
         }
@@ -265,7 +270,7 @@ public class UserDAO implements UserDAOInterface {
     @Override
     public boolean updateUser(User user){
         String sql = "UPDATE users SET email = ?, username = ?, password_hash = ?, first_name = ?, last_name = ?, age = ?, start_weight = ?, start_body_fat_percentage = ?, feet = ?, inches = ?, current_weight = ?, current_body_fat_percentage = ?, home_gym = ?, latitude = ?, longitude = ?, " +
-        "about_me = ?, experience_level = ?, lifestyle = ?, consistency = ?, role = ?, is_premium = ?  WHERE id = ?";
+        "about_me = ?, experience_level = ?, lifestyle = ?, consistency = ?, role = ?, is_premium = ?, stripe_customer_id = ?  WHERE id = ?";
         boolean updated = false;
 
         try(Connection conn = DBConnection.getConnection()){
@@ -292,7 +297,8 @@ public class UserDAO implements UserDAOInterface {
             ps.setString(19, user.getConsistency() != null ? user.getConsistency().toString() : null);
             ps.setString(20, user.getRole());
             ps.setBoolean(21, user.isPremium());
-            ps.setInt(22, user.getId());
+            ps.setString(22, user.getStripeCustomerId());
+            ps.setInt(23, user.getId());
 
             int rowsAffected = ps.executeUpdate();
             updated = rowsAffected > 0;
@@ -404,8 +410,9 @@ public class UserDAO implements UserDAOInterface {
                     experienceLevel,
                     lifestyle,
                     consistency,
-                    rs.getBoolean("is_premium")
-                    );
+                    rs.getBoolean("is_premium"),
+                    rs.getString("stripe_customer_id")
+                );
                 clientList.add(client);
             }
         } catch(SQLException e){
@@ -500,7 +507,8 @@ public class UserDAO implements UserDAOInterface {
                     experienceLevel,
                     lifestyle,
                     consistency,
-                    rs.getBoolean("is_premium")
+                    rs.getBoolean("is_premium"),
+                    rs.getString("stripe_customer_id")
                 );
                 matches.add(match);
             }
@@ -553,8 +561,9 @@ public class UserDAO implements UserDAOInterface {
                     experienceLevel,
                     lifestyle,
                     consistency,
-                    rs.getBoolean("is_premium")
-                    );
+                    rs.getBoolean("is_premium"),
+                    rs.getString("stripe_customer_id")
+                );
                 userList.add(user);
             }
 
@@ -609,8 +618,9 @@ public class UserDAO implements UserDAOInterface {
                     experienceLevel,
                     lifestyle,
                     consistency,
-                    rs.getBoolean("is_premium")
-                    );
+                    rs.getBoolean("is_premium"),
+                    rs.getString("stripe_customer_id")
+                );
                 userList.add(user);
             }
 
@@ -722,7 +732,8 @@ public class UserDAO implements UserDAOInterface {
                         level,
                         life,
                         consist,
-                        rs.getBoolean("is_premium")
+                        rs.getBoolean("is_premium"),
+                        rs.getString("stripe_customer_id")
                     );
                 users.add(user);
             }
@@ -739,8 +750,45 @@ public class UserDAO implements UserDAOInterface {
         try (Connection conn = DBConnection.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(sql);
 
+            ps.setBoolean(1, status);
+            ps.setInt(2, userId);
+
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public String getStripeCustomerIdByUserId(int userId) {
+        String sql = "SELECT stripe_customer_id FROM users WHERE id = ?";
+
+        try (Connection conn = DBConnection.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement(sql);
+
             ps.setInt(1, userId);
-            ps.setBoolean(2, status);
+
+            ResultSet rs = ps.executeQuery();
+
+            if(rs.next()) {
+                return rs.getString("stripe_customer_id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public boolean updateStripeCustomerId(int userId, String customerId) {
+        String sql = "UPDATE users SET stripe_customer_id = ? WHERE id = ?";
+
+        try (Connection conn = DBConnection.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setString(1, customerId);
+            ps.setInt(2, userId);
 
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {

@@ -116,6 +116,7 @@ public class Main {
         app.before("/messages/*", Main::protectRoute);
         app.before("/photos/*", Main::protectRoute);
         app.before("/create-checkout-session", Main::protectRoute);
+        app.before("/create-billing-portal-session", Main::protectRoute);
         //app.before("/stripe/webhook", Main::protectRoute);
     
         //Websocket Connection
@@ -230,6 +231,7 @@ public class Main {
         //Checkout
         app.post("/create-checkout-session", StripeController::createCheckoutSession);
         app.post("/stripe/webhook", StripeController::handleWebhook);
+        app.post("/create-billing-portal-session", StripeController::createBillingPortal);
     }
 
     public static void protectRoute(io.javalin.http.Context ctx){

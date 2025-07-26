@@ -9,7 +9,7 @@ import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
 
 public class StripeService {
-    private static final String PRICE_ID = "price_1Rmz7BGbF0aoNlGnma1E7msm";
+    //private static final String PRICE_ID = "price_1Rmz7BGbF0aoNlGnma1E7msm";
 
     public Session createSubscriptionSession (int userId, String subscriptionType, String priceId) throws StripeException {
         Stripe.apiKey = "sk_test_51RmyteGbF0aoNlGn45SzqCexqBMdAWbx3zGz5rP56KfhuatbtqUMatiXuOb5cawDQxrLJGTCBZXRAEI9mPZv2aTd00WMMG7DYY";
@@ -39,5 +39,16 @@ public class StripeService {
             
             Session session = Session.create(params);
             return session;
+    }
+
+    public com.stripe.model.billingportal.Session createBillingPortalSession(String customerId, String returnUrl) throws StripeException {
+        Stripe.apiKey = "sk_test_51RmyteGbF0aoNlGn45SzqCexqBMdAWbx3zGz5rP56KfhuatbtqUMatiXuOb5cawDQxrLJGTCBZXRAEI9mPZv2aTd00WMMG7DYY";
+
+        Map<String, Object> params = new HashMap<>();
+
+        params.put("customer", customerId);
+        params.put("return_url", returnUrl);
+
+        return com.stripe.model.billingportal.Session.create(params);
     }
 }

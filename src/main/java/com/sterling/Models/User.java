@@ -51,6 +51,8 @@ public class User {
     private Consistency consistency;
     @JsonProperty("is_premium")
     private boolean isPremium;
+    @JsonProperty("stripe_customer_id")
+    private String stripeCustomerId;
 
     public User() {
     }
@@ -60,7 +62,7 @@ public class User {
             float startWeight, float startBodyFatPercentage, int heightFeet, int heightInches, float currentWeight,
             float currentBodyFatPercentage, Timestamp createdOn, String role, Integer trainerId, String homeGym,
             Double latitude, Double longitude, boolean isWorkingOut, String aboutMe, ExperienceLevel experienceLevel,
-            Lifestyle lifestyle, Consistency consistency, boolean isPremium) {
+            Lifestyle lifestyle, Consistency consistency, boolean isPremium, String stripeCustomerId) {
         this.id = id;
         this.email = email;
         this.username = username;
@@ -86,6 +88,7 @@ public class User {
         this.lifestyle = lifestyle;
         this.consistency = consistency;
         this.isPremium = isPremium;
+        this.stripeCustomerId = stripeCustomerId;
     }
 
     public User(int id, String username, String firstName, String lastName) {
@@ -300,6 +303,15 @@ public class User {
 
     public void setPremium(boolean isPremium) {
         this.isPremium = isPremium;
+    }
+
+    public String getStripeCustomerId() {
+        return stripeCustomerId;
+    }
+
+
+    public void setStripeCustomerId(String stripeCustomerId) {
+        this.stripeCustomerId = stripeCustomerId;
     }
 
     @JsonProperty("badges")
