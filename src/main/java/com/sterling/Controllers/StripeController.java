@@ -2,6 +2,7 @@ package com.sterling.Controllers;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.sterling.DAO.UserDAO;
@@ -247,6 +248,58 @@ public class StripeController {
         } catch (Exception e) {
             e.printStackTrace();
             ctx.status(400).json(Collections.singletonMap("error", "Invalid request"));
+        }
+    }
+
+    public static void getAllUserSubscriptions(Context ctx) {
+        try {
+            int userId = ctx.attribute("userId");
+            UserDAO userDao = new UserDAO();
+            UserService userService = new UserService(userDao);
+            String customerId = userService.getStripeCustomerIdByUserId(userId);
+
+            if (customerId == null || customerId.isEmpty()) {
+                ctx.status(400).json(Collections.singletonMap("error", "No Stripe customer ID found"));
+                return;
+            }
+
+            List<Subscription> subscriptions = stripeService.getAllSubscriptions(customerId);
+
+            List<Map<String, Object>> response = subscriptions.stream().map(sub -> {
+                Map<String, Object> subInfo = new HashMap<>();
+                subInfo.put("id", sub.getId());
+                subInfo.put("status", sub.getStatus());
+                subInfo.put("start_date", sub.getStartDate());
+                subInfo.put("current_period_end", sub.getCurrentPeriodEnd());
+                subInfo.put("cancel_at_period_end", sub.getCancelAtPeriodEnd());
+                subInfo.put("canceled_at", sub.getCanceledAt());
+                subInfo.put("metadata", sub.getMetadata());
+                subInfo.put("price", sub.getItems().getData().get(0).getPrice().getId());
+                return subInfo;
+            }).toList();
+
+            ctx.json(response);
+        } catch (StripeException e) {
+            e.printStackTrace();
+            ctx.status(500).json(Collections.singletonMap("error", e.getMessage()));
+        }
+    }
+
+    public static void cancelSubscription(Context ctx) {
+        try {
+            String subscriptionId = ctx.pathParam("id");
+
+            Subscription cancelled = stripeService.cancelSubscription(subscriptionId);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("id", cancelled.getId());
+            response.put("status", cancelled.getStatus());
+
+            ctx.json(response);
+
+        } catch (StripeException e) {
+            e.printStackTrace();
+            ctx.status(500).json(Collections.singletonMap("error", "Failed to cancel subscription: " + e.getMessage()));
         }
     }
 }
