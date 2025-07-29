@@ -123,4 +123,36 @@ public class WorkoutSessionDAO implements WorkoutSessionDAOInterface {
         }
         return false;
     }
+
+    @Override
+    public List<WorkoutSession> getSessionsByUserIdAndStatus(int userId, WorkoutStatus status) {
+        List<WorkoutSession> sessions = new ArrayList<>();
+        String sql = "SELECT * FROM workout_sessions WHERE (user1_id = ? OR user2_id = ?) AND status = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, userId);
+            stmt.setInt(2, userId);
+            stmt.setString(3, status.name());
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                WorkoutSession session = new WorkoutSession(
+                        rs.getInt("session_id"),
+                        rs.getInt("user1_id"),
+                        rs.getInt("user2_id"),
+                        rs.getTimestamp("scheduled_time"),
+                        WorkoutStatus.valueOf(rs.getString("status")),
+                        rs.getTimestamp("created_at")
+                );
+                sessions.add(session);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return sessions;
+    }
 }

@@ -56,13 +56,27 @@ public class WorkoutSessionController {
     public void getSessionsByUserId(Context ctx) {
         int requesterId = ctx.attribute("userId");
         int userId = Integer.parseInt(ctx.pathParam("id"));
+        String statusParam = ctx.queryParam("status");
+
+        List<WorkoutSession> sessions;
 
         if(requesterId != userId) {
             ctx.status(403).result("Not authorized to view sessions for another user");
             return;
         }
 
-        List<WorkoutSession> sessions = workoutSessionService.getSessionsByUserId(userId);
+        if (statusParam != null){
+            try {
+                WorkoutStatus status = WorkoutStatus.valueOf(statusParam.toUpperCase());
+                sessions = workoutSessionService.getSessionsByUserIdAndStatus(userId, status);
+            } catch (IllegalArgumentException e) {
+                ctx.status(400).result("Invalid status value");
+                return;
+            }
+        } else {
+            sessions = workoutSessionService.getSessionsByUserId(userId);
+        }
+
         ctx.json(sessions);
     }
 

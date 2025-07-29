@@ -32,4 +32,8 @@ public class WorkoutSessionService {
     public boolean deleteSession(int sessionId) {
         return workoutSessionDao.deleteSession(sessionId);
     }
+
+    public List<WorkoutSession> getSessionsByUserIdAndStatus(int userId, WorkoutStatus status) {
+        return workoutSessionDao.getSessionsByUserIdAndStatus(userId, status);
+    }
 }

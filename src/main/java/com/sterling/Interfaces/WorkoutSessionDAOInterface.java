@@ -9,6 +9,7 @@ public interface WorkoutSessionDAOInterface {
     WorkoutSession createSession(WorkoutSession session);
     WorkoutSession getSessionById(int sessionId);
     List<WorkoutSession> getSessionsByUserId(int userId);
+    List<WorkoutSession> getSessionsByUserIdAndStatus(int userId, WorkoutStatus status);
     boolean updateSessionStatus(int sessionId, WorkoutStatus status);
     boolean deleteSession(int sessionId);
 }
