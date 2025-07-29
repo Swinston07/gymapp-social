@@ -28,10 +28,12 @@ import com.sterling.Controllers.ExerciseController;
 import com.sterling.Controllers.GymBuddyController;
 import com.sterling.Controllers.MessageController;
 import com.sterling.Controllers.PhotoController;
+import com.sterling.Controllers.ReviewController;
 import com.sterling.Controllers.StripeController;
 import com.sterling.Controllers.UserController;
 import com.sterling.Controllers.UserProgressController;
 import com.sterling.Controllers.WorkoutInviteController;
+import com.sterling.Controllers.WorkoutSessionController;
 import com.sterling.DAO.AssignedExerciseDAO;
 import com.sterling.DAO.AssignedWorkoutDAO;
 import com.sterling.DAO.BlogPostDAO;
@@ -39,9 +41,11 @@ import com.sterling.DAO.ExerciseDAO;
 import com.sterling.DAO.GymBuddyDAO;
 import com.sterling.DAO.MessageDAO;
 import com.sterling.DAO.PhotoDAO;
+import com.sterling.DAO.ReviewDAO;
 import com.sterling.DAO.UserDAO;
 import com.sterling.DAO.UserProgressDAO;
 import com.sterling.DAO.WorkoutInviteDAO;
+import com.sterling.DAO.WorkoutSessionDAO;
 import com.sterling.Services.AssignedExerciseService;
 import com.sterling.Services.AssignedWorkoutService;
 import com.sterling.Services.BlogPostService;
@@ -49,9 +53,11 @@ import com.sterling.Services.ExerciseService;
 import com.sterling.Services.GymBuddyService;
 import com.sterling.Services.MessageService;
 import com.sterling.Services.PhotoService;
+import com.sterling.Services.ReviewService;
 import com.sterling.Services.UserProgressService;
 import com.sterling.Services.UserService;
 import com.sterling.Services.WorkoutInviteService;
+import com.sterling.Services.WorkoutSessionService;
 import com.sterling.Utils.JwtUtil;
 
 import io.javalin.Javalin;
@@ -71,6 +77,8 @@ public class Main {
         GymBuddyDAO gymBuddyDAO = new GymBuddyDAO();
         MessageDAO messageDAO = new MessageDAO();
         PhotoDAO photoDAO = new PhotoDAO();
+        ReviewDAO reviewDAO = new ReviewDAO();
+        WorkoutSessionDAO workoutSessionDao = new WorkoutSessionDAO();
 
         UserService userService = new UserService(userDAO);
         ExerciseService exerciseService = new ExerciseService(exerciseDAO);
@@ -82,6 +90,8 @@ public class Main {
         WorkoutInviteService workoutInviteService = new WorkoutInviteService(workoutInviteDao, gymBuddyService);
         MessageService messageService = new MessageService(messageDAO);
         PhotoService photoService = new PhotoService(photoDAO);
+        ReviewService reviewService = new ReviewService(reviewDAO);
+        WorkoutSessionService workoutSessionService = new WorkoutSessionService(workoutSessionDao);
 
         UserController userController = new UserController(userService);
         ExerciseController exerciseController = new ExerciseController(exerciseService);
@@ -93,6 +103,8 @@ public class Main {
         GymBuddyController gymBuddyController = new GymBuddyController(gymBuddyService);
         MessageController messageController = new MessageController(messageService);
         PhotoController photoController = new PhotoController(photoService);
+        ReviewController reviewController = new ReviewController(reviewService);
+        WorkoutSessionController workoutSessionController = new WorkoutSessionController(workoutSessionService);
     
         app.before(ctx->{
             ctx.header("Access-Control-Allow-Origin", "*");
@@ -228,6 +240,20 @@ public class Main {
         app.get("/users/{id}/photos", photoController::getPhotosByUserId);
         app.get("/photos/{photoId}", photoController::getPhotoByPhotoId);
         app.delete("/photos/{photoId}", photoController::deletePhotoByPhotoId);
+
+        //Review Routes
+        app.post("/users/{id}/reviews", reviewController::createReview);
+        app.get("/users/{id}/reviews", reviewController::getReviewsForUser);
+        app.get("/users/{id}/reviews/average", reviewController::getAverageRatingForUser);
+        app.delete("/users/{id}/delete/{reviewId}", reviewController::deleteReview);
+
+        //Workout Session routes
+        app.post("/users/{id}/sessions", workoutSessionController::createSession);
+        app.get("/users/{id}/sessions", workoutSessionController::getSessionsByUserId);
+        app.get("/sessions/{sessionId}", workoutSessionController::getSessionById);
+        app.put("/sessions/{sessionId}/status/{status}", workoutSessionController::updateSessionStatus);
+        app.delete("/sessions/{sessionId}", workoutSessionController::deleteSession);
+
 
         //Checkout
         app.post("/create-checkout-session", StripeController::createCheckoutSession);

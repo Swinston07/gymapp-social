@@ -1,0 +1,126 @@
+package com.sterling.DAO;
+
+import com.sterling.Connection.DBConnection;
+import com.sterling.Interfaces.WorkoutSessionDAOInterface;
+import com.sterling.Models.WorkoutSession;
+import com.sterling.Models.WorkoutStatus;
+
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class WorkoutSessionDAO implements WorkoutSessionDAOInterface {
+
+    @Override
+    public WorkoutSession createSession(WorkoutSession session) {
+        String sql = "INSERT INTO workout_sessions (user1_id, user2_id, scheduled_time, status) VALUES (?, ?, ?, ?)";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            stmt.setInt(1, session.getUser1Id());
+            stmt.setInt(2, session.getUser2Id());
+            stmt.setTimestamp(3, session.getScheduledTime());
+            stmt.setString(4, session.getStatus().toString());
+
+            int rowsAffected = stmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                ResultSet keys = stmt.getGeneratedKeys();
+                if (keys.next()) {
+                    session.setSessionId(keys.getInt(1));
+                }
+                return session;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public WorkoutSession getSessionById(int sessionId) {
+        String sql = "SELECT * FROM workout_sessions WHERE session_id = ?";
+        try (Connection conn =DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, sessionId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return new WorkoutSession(
+                        rs.getInt("session_id"),
+                        rs.getInt("user1_id"),
+                        rs.getInt("user2_id"),
+                        rs.getTimestamp("scheduled_time"),
+                        WorkoutStatus.valueOf(rs.getString("status")),
+                        rs.getTimestamp("created_at")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public List<WorkoutSession> getSessionsByUserId(int userId) {
+        String sql = "SELECT * FROM workout_sessions WHERE user1_id = ? OR user2_id = ? ORDER BY scheduled_time ASC";
+        List<WorkoutSession> sessions = new ArrayList<>();
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, userId);
+            stmt.setInt(2, userId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                WorkoutSession session = new WorkoutSession(
+                        rs.getInt("session_id"),
+                        rs.getInt("user1_id"),
+                        rs.getInt("user2_id"),
+                        rs.getTimestamp("scheduled_time"),
+                        WorkoutStatus.valueOf(rs.getString("status")),
+                        rs.getTimestamp("created_at")
+                );
+                sessions.add(session);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return sessions;
+    }
+
+    @Override
+    public boolean updateSessionStatus(int sessionId, WorkoutStatus status) {
+        String sql = "UPDATE workout_sessions SET status = ? WHERE session_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, status.toString());
+            stmt.setInt(2, sessionId);
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean deleteSession(int sessionId) {
+        String sql = "DELETE FROM workout_sessions WHERE session_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, sessionId);
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+}
