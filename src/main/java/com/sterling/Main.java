@@ -127,6 +127,7 @@ public class Main {
         app.before("/users/*/gym-buddies*", Main::protectRoute);
         app.before("/messages/*", Main::protectRoute);
         app.before("/photos/*", Main::protectRoute);
+        app.before("/sessions/*", Main::protectRoute);
         app.before("/create-checkout-session", Main::protectRoute);
         app.before("/create-billing-portal-session", Main::protectRoute);
         app.before("/subscriptions/*", Main::protectRoute);
@@ -244,6 +245,7 @@ public class Main {
         //Review Routes
         app.post("/users/{id}/reviews", reviewController::createReview);
         app.get("/users/{id}/reviews", reviewController::getReviewsForUser);
+        app.get("/users/{id}/reviews/written", reviewController::getReviewsWrittenByUser);
         app.get("/users/{id}/reviews/average", reviewController::getAverageRatingForUser);
         app.delete("/users/{id}/delete/{reviewId}", reviewController::deleteReview);
 

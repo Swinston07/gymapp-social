@@ -9,7 +9,7 @@ import com.sterling.Services.WorkoutSessionService;
 import io.javalin.http.Context;
 
 public class WorkoutSessionController {
-    WorkoutSessionService workoutSessionService;
+    private final WorkoutSessionService workoutSessionService;
     
     public WorkoutSessionController(WorkoutSessionService workoutSessionService) {
         this.workoutSessionService = workoutSessionService;
@@ -87,6 +87,11 @@ public class WorkoutSessionController {
 
         try {
             WorkoutSession session = workoutSessionService.getSessionById(sessionId);
+
+            if (session == null) {
+                ctx.status(404).result("Session not found");
+                return;
+            }
 
             if(session.getUser1Id() != requesterId && session.getUser2Id() != requesterId) {
                 ctx.status(403).result("Not authorized to update this session's status");

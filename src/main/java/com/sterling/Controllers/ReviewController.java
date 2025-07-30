@@ -24,6 +24,7 @@ public class ReviewController {
         }
 
         Review review = ctx.bodyAsClass(Review.class);
+        review.setReviewerId(userId);
         Review created = reviewService.createReview(review);
 
         if (created != null) {
@@ -36,6 +37,19 @@ public class ReviewController {
     public void getReviewsForUser(Context ctx) {
         int reviewedUserId = Integer.parseInt(ctx.pathParam("id"));
         List<Review> reviews = reviewService.getReviewsForUser(reviewedUserId);
+        ctx.json(reviews);
+    }
+
+    public void getReviewsWrittenByUser(Context ctx) {
+        int requesterId = ctx.attribute("userId");
+        int userId = Integer.parseInt(ctx.pathParam("id"));
+
+        if(requesterId != userId) {
+            ctx.status(403).result("Unauthorized");
+            return;
+        }
+
+        List<Review> reviews = reviewService.getReviewsWrittenByUser(userId);
         ctx.json(reviews);
     }
 

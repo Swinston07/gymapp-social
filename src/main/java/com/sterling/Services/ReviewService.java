@@ -20,6 +20,10 @@ public class ReviewService {
         return reviewDao.getReviewsForUser(reviewedUserId);
     }
 
+    public List<Review> getReviewsWrittenByUser(int reviewerId) {
+        return reviewDao.getReviewsWrittenByUser(reviewerId);
+    }
+
     public double getAverageRatingForUser(int reviewedUserId) {
         return reviewDao.getAverageRatingForUser(reviewedUserId);
     }

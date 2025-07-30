@@ -40,7 +40,7 @@ public class ReviewDAO implements ReviewDAOInterface {
 
     @Override
     public List<Review> getReviewsForUser(int reviewedUserId) {
-        String sql = "SELECT * FROM reviews WHERE reviewed_id = ?";
+        String sql = "SELECT * FROM reviews WHERE reviewed_id = ? ORDER BY created_at DESC";
         List<Review> reviews = new ArrayList<>();
 
         try (Connection conn = DBConnection.getConnection();
@@ -66,6 +66,37 @@ public class ReviewDAO implements ReviewDAOInterface {
             e.printStackTrace();
         }
 
+        return reviews;
+    }
+
+    @Override
+    public List<Review> getReviewsWrittenByUser(int reviewerId) {
+        String sql = "SELECT * FROM reviews WHERE reviewer_id = ?";
+        List<Review> reviews = new ArrayList<>();
+
+        try(Connection conn = DBConnection.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setInt(1, reviewerId);
+
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()) {
+                reviews.add(
+                    new Review(
+                        rs.getInt("review_id"),
+                        rs.getInt("session_id"),
+                        rs.getInt("reviewer_id"),
+                        rs.getInt("reviewed_id"),
+                        rs.getInt("rating"),
+                        rs.getString("comment"),
+                        rs.getTimestamp("created_at")
+                    )
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return reviews;
     }
 

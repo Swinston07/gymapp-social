@@ -7,6 +7,7 @@ import com.sterling.Models.Review;
 public interface ReviewDAOInterface {
     Review createReview(Review reciew);
     List<Review> getReviewsForUser(int reviewedUserId);
+    List<Review> getReviewsWrittenByUser(int reviewerId);
     double getAverageRatingForUser(int reviewedUserId);
     boolean deleteReview(int reviewId);
 }
