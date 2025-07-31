@@ -42,7 +42,7 @@ public class WorkoutSessionDAO implements WorkoutSessionDAOInterface {
     @Override
     public WorkoutSession getSessionById(int sessionId) {
         String sql = "SELECT * FROM workout_sessions WHERE session_id = ?";
-        try (Connection conn =DBConnection.getConnection();
+        try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, sessionId);
@@ -66,7 +66,16 @@ public class WorkoutSessionDAO implements WorkoutSessionDAOInterface {
 
     @Override
     public List<WorkoutSession> getSessionsByUserId(int userId) {
-        String sql = "SELECT * FROM workout_sessions WHERE user1_id = ? OR user2_id = ? ORDER BY scheduled_time ASC";
+        String sql = """
+        SELECT 
+        ws.*,
+        u1.first_name AS user1_first_name, u1.last_name AS user1_last_name,
+        u2.first_name AS user2_first_name, u2.last_name AS user2_last_name
+         FROM workout_sessions ws
+         JOIN users u1 ON ws.user1_id = u1.id
+         JOIN users u2 ON ws.user2_id = u2.id 
+         WHERE (ws.user1_id = ? OR ws.user2_id = ?)
+         ORDER BY ws.scheduled_time ASC""";
         List<WorkoutSession> sessions = new ArrayList<>();
 
         try (Connection conn = DBConnection.getConnection();
@@ -85,6 +94,10 @@ public class WorkoutSessionDAO implements WorkoutSessionDAOInterface {
                         WorkoutStatus.valueOf(rs.getString("status")),
                         rs.getTimestamp("created_at")
                 );
+                session.setUser1FirstName(rs.getString("user1_first_name"));
+                session.setUser1LastName(rs.getString("user1_last_name"));
+                session.setUser2FirstName(rs.getString("user2_first_name"));
+                session.setUser2LastName(rs.getString("user2_last_name"));
                 sessions.add(session);
             }
         } catch (SQLException e) {
@@ -127,7 +140,16 @@ public class WorkoutSessionDAO implements WorkoutSessionDAOInterface {
     @Override
     public List<WorkoutSession> getSessionsByUserIdAndStatus(int userId, WorkoutStatus status) {
         List<WorkoutSession> sessions = new ArrayList<>();
-        String sql = "SELECT * FROM workout_sessions WHERE (user1_id = ? OR user2_id = ?) AND status = ?";
+        String sql = """
+        SELECT 
+        ws.*,
+        u1.first_name AS user1_first_name, u1.last_name AS user1_last_name,
+        u2.first_name AS user2_first_name, u2.last_name AS user2_last_name
+         FROM workout_sessions ws
+         JOIN users u1 ON ws.user1_id = u1.id
+         JOIN users u2 ON ws.user2_id = u2.id 
+         WHERE (ws.user1_id = ? OR ws.user2_id = ?) AND ws.status = ?
+         ORDER BY ws.scheduled_time ASC""";
 
         try (Connection conn = DBConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -147,12 +169,15 @@ public class WorkoutSessionDAO implements WorkoutSessionDAOInterface {
                         WorkoutStatus.valueOf(rs.getString("status")),
                         rs.getTimestamp("created_at")
                 );
+                session.setUser1FirstName(rs.getString("user1_first_name"));
+                session.setUser1LastName(rs.getString("user1_last_name"));
+                session.setUser2FirstName(rs.getString("user2_first_name"));
+                session.setUser2LastName(rs.getString("user2_last_name"));
                 sessions.add(session);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return sessions;
     }
 }
