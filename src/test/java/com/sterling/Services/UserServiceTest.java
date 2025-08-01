@@ -98,11 +98,17 @@ public class UserServiceTest {
         user.setUsername("username");
         user.setEmail("username@gmail.com");
 
-        when(userDAO.updateUser(user)).thenReturn(true);
+        User existingUser = new User();
+        existingUser.setId(1);
+        existingUser.setUsername("oldUsername");
+
+        when(userDAO.getUserById(1)).thenReturn(existingUser);
+        when(userDAO.updateUser(any(User.class))).thenReturn(true);
+        
 
         boolean updated = userService.updateUser(user);
 
         assertTrue(updated);
-        verify(userDAO,times(1)).updateUser(user);
+        verify(userDAO,times(1)).updateUser(any(User.class));
     }
 }

@@ -54,8 +54,8 @@ public class BlogPostServiceTest {
     @Test
     void testGetAllBlogPosts() {
         List<BlogPost> posts = List.of(
-            new BlogPost(1, 2, "First Post", null, null),
-            new BlogPost(2, 3, "Second Post", null, null)
+            new BlogPost(1, 2, "First Post", null, null, null),
+            new BlogPost(2, 3, "Second Post", null, null, null)
         );
 
         when(blogPostDAO.getAllBlogPosts()).thenReturn(posts);
@@ -89,8 +89,8 @@ public class BlogPostServiceTest {
     void testGetPostsByUserId() {
         int userId = 2;
         List<BlogPost> posts = List.of(
-            new BlogPost(1, userId, "First Post", null, null),
-            new BlogPost(2, userId, "Second Post", null, null)
+            new BlogPost(1, userId, "First Post", null, null, null),
+            new BlogPost(2, userId, "Second Post", null, null, null)
             );
 
 
