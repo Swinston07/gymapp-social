@@ -14,6 +14,8 @@ import com.sterling.Models.ExperienceLevel;
 import com.sterling.Models.Lifestyle;
 import com.sterling.Models.User;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 public class UserService {
     private final UserDAOInterface userDao;
 
@@ -27,6 +29,18 @@ public class UserService {
         if(exists != null)
             return false;
 
+        if (user.getPassword() == null || user.getPassword().length() < 8) {
+            return false;
+        }
+
+        if (user.getEmail() == null || !user.getEmail().matches("^[\\w.-]+@[\\w.-]+\\.\\w{2,}$")) {
+            return false;
+        }
+        
+        //Hash the plain text pw
+        String hashedPW = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+        user.setPassword(hashedPW);
+
         userDao.addUser(user);
         return true;
     }
@@ -34,7 +48,7 @@ public class UserService {
     public User loginUser(String username, String password){
         User user = userDao.getUserByUsername(username);
 
-        if(user != null && user.getPassword().equals(password))
+        if(user != null && BCrypt.checkpw(password, user.getPassword()))
             return user;
         return null;
     }
@@ -63,7 +77,16 @@ public class UserService {
         if(user.getHeightInches()!=0) existingUser.setHeightInches(user.getHeightInches());
         if(user.getRole()!=null) existingUser.setRole(user.getRole());
         if(user.getLastName()!=null) existingUser.setLastName(user.getLastName());
-        if(user.getPassword()!=null) existingUser.setPassword(user.getPassword());
+        if (user.getPassword() != null && !user.getPassword().isBlank()) {
+            // Only hash if not already hashed (optional guard against double hashing)
+            if (!user.getPassword().startsWith("$2a$")) {
+                String hashed = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+                existingUser.setPassword(hashed);
+            } else {
+                existingUser.setPassword(user.getPassword());
+            }
+        }
+
         if(user.getStartBodyFatPercentage()!=0) existingUser.setStartBodyFatPercentage(user.getStartBodyFatPercentage());
         if(user.getStartWeight()!=0) existingUser.setStartWeight(user.getStartWeight());
         if(user.getUsername()!=null) existingUser.setUsername(user.getUsername());
@@ -161,10 +184,10 @@ public class UserService {
         return userDao.findUsersByFilters(homeGym, role, minAge, maxAge, experienceLevel, lifestyle, consistency, userId);
     }
 
-    public boolean updatePremiumStatus(int userId, boolean staus) {
+    public boolean updatePremiumStatus(int userId, boolean status) {
         User user = userDao.getUserById(userId);
     if (user != null) {
-        user.setPremium(staus);
+        user.setPremium(status);
         return userDao.updateUser(user); // must persist change
     }
     return false;
