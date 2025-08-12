@@ -20,6 +20,9 @@ public class RouteConfig {
         PhotoController photoController = (PhotoController) beans.get("photoController");
         ReviewController reviewController = (ReviewController) beans.get("reviewController");
         WorkoutSessionController workoutSessionController = (WorkoutSessionController) beans.get("workoutSessionController");
+        DeviceTokenController deviceTokenController = (DeviceTokenController) beans.get("deviceTokenController");
+        NotificationController notificationController = (NotificationController) beans.get("notificationController");
+        UnreadController unreadController = (UnreadController) beans.get("unreadController");
 
         // ===== User Routes =====
         app.post("/users", userController::registerUser);
@@ -115,5 +118,21 @@ public class RouteConfig {
         app.post("/create-billing-portal-session", StripeController::createBillingPortal);
         app.get("/subscriptions/{id}", StripeController::getAllUserSubscriptions);
         app.delete("/subscriptions/{id}", StripeController::cancelSubscription);
+
+        // ===== Device Token Routes =====
+        app.post("/users/{id}/devices", deviceTokenController::register);
+        app.delete("/users/{id}/devices", deviceTokenController::revoke);
+        app.get("/users/{id}/devices", deviceTokenController::list);
+
+        // ===== Push Notifications Routes =====
+        app.get("/users/{id}/notifications", notificationController::list);
+        app.post("/users/{id}/notifications/{notificationId}/read", notificationController::markRead);
+        app.post("/users/{id}/notifications/mark-all-read", notificationController::markAllRead);
+
+        // ===== Unread / Badge Routes =====
+        app.get ("/users/{id}/unread-summary",              unreadController::summary);
+        app.get("/users/{id}/messages/unread-by-partner", unreadController::unreadByPartner);
+        app.post("/users/{id}/sections/{section}/seen",     unreadController::markSectionSeen);
+        app.post("/users/{id}/messages/read/{otherUserId}", unreadController::markMessagesRead);
     }
 }

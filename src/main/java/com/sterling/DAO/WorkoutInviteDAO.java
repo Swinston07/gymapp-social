@@ -129,4 +129,32 @@ public class WorkoutInviteDAO implements WorkoutInviteDAOInterface {
         }
         return false;
     }
+
+    @Override
+    public WorkoutInvite getInviteById(int inviteId){
+        String sql = "SELECT id, sender_id, recipient_id, status, message, sent_at, responded_at " +
+                    "FROM workout_invites WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, inviteId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new WorkoutInvite(
+                        rs.getInt("id"),
+                        rs.getInt("sender_id"),
+                        rs.getInt("recipient_id"),
+                        rs.getString("status"),
+                        rs.getString("message"),
+                        rs.getTimestamp("sent_at"),
+                        rs.getTimestamp("responded_at")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

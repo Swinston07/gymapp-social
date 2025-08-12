@@ -108,9 +108,9 @@ public class WorkoutSessionDAO implements WorkoutSessionDAOInterface {
 
     @Override
     public boolean updateSessionStatus(int sessionId, WorkoutStatus status) {
-        String sql = "UPDATE workout_sessions SET status = ? WHERE session_id = ?";
+        String sql = "UPDATE workout_sessions SET status = ?, updated_at = NOW() WHERE session_id = ?";
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, status.toString());
             stmt.setInt(2, sessionId);
@@ -121,6 +121,7 @@ public class WorkoutSessionDAO implements WorkoutSessionDAOInterface {
         }
         return false;
     }
+
 
     @Override
     public boolean deleteSession(int sessionId) {

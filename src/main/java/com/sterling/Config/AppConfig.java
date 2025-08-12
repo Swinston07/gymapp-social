@@ -2,6 +2,8 @@ package com.sterling.Config;
 
 import com.sterling.Controllers.*;
 import com.sterling.DAO.*;
+import com.sterling.Push.ExpoPushGateway;
+import com.sterling.Push.PushGateway;
 import com.sterling.Services.*;
 
 import java.util.HashMap;
@@ -25,6 +27,10 @@ public class AppConfig {
         PhotoDAO photoDAO = new PhotoDAO();
         ReviewDAO reviewDAO = new ReviewDAO();
         WorkoutSessionDAO workoutSessionDAO = new WorkoutSessionDAO();
+        DeviceTokenDAO deviceTokenDAO = new DeviceTokenDAO();
+        NotificationDAO notificationDAO = new NotificationDAO();
+        UnreadDAO unreadDAO = new UnreadDAO();
+        PushGateway pushGateway = new ExpoPushGateway();
 
         // ===== Services =====
         UserService userService = new UserService(userDAO);
@@ -33,12 +39,15 @@ public class AppConfig {
         AssignedExerciseService assignedExerciseService = new AssignedExerciseService(assignedExerciseDAO);
         BlogPostService blogPostService = new BlogPostService(blogPostDAO);
         UserProgressService userProgressService = new UserProgressService(userProgressDAO);
-        GymBuddyService gymBuddyService = new GymBuddyService(gymBuddyDAO);
-        WorkoutInviteService workoutInviteService = new WorkoutInviteService(workoutInviteDAO, gymBuddyService);
-        MessageService messageService = new MessageService(messageDAO);
         PhotoService photoService = new PhotoService(photoDAO);
         ReviewService reviewService = new ReviewService(reviewDAO);
         WorkoutSessionService workoutSessionService = new WorkoutSessionService(workoutSessionDAO);
+        DeviceTokenService deviceTokenService = new DeviceTokenService(deviceTokenDAO);
+        NotificationService notificationService = new NotificationService(notificationDAO, deviceTokenDAO, pushGateway);
+        MessageService messageService = new MessageService(messageDAO, notificationService);
+        GymBuddyService gymBuddyService = new GymBuddyService(gymBuddyDAO, notificationService);
+        WorkoutInviteService workoutInviteService = new WorkoutInviteService(workoutInviteDAO, gymBuddyService, notificationService);
+        UnreadService unreadService = new UnreadService(unreadDAO);
 
         // ===== Controllers =====
         UserController userController = new UserController(userService);
@@ -52,7 +61,10 @@ public class AppConfig {
         MessageController messageController = new MessageController(messageService);
         PhotoController photoController = new PhotoController(photoService);
         ReviewController reviewController = new ReviewController(reviewService);
-        WorkoutSessionController workoutSessionController = new WorkoutSessionController(workoutSessionService);
+        DeviceTokenController DeviceTokenController = new DeviceTokenController(deviceTokenService);
+        NotificationController notificationController = new NotificationController(notificationService);
+        WorkoutSessionController workoutSessionController = new WorkoutSessionController(workoutSessionService, notificationService);
+        UnreadController unreadController = new UnreadController(unreadService);
 
         // ===== Register beans =====
         beans.put("userController", userController);
@@ -67,6 +79,9 @@ public class AppConfig {
         beans.put("photoController", photoController);
         beans.put("reviewController", reviewController);
         beans.put("workoutSessionController", workoutSessionController);
+        beans.put("deviceTokenController", DeviceTokenController);
+        beans.put("notificationController", notificationController);
+        beans.put("unreadController", unreadController);
 
         // StripeController uses static methods, so no instantiation needed
 

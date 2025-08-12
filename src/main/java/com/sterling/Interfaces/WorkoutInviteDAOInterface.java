@@ -11,4 +11,5 @@ public interface WorkoutInviteDAOInterface {
     boolean updateInviteStatus(int inviteId, String status, Timestamp respondedAt);
     public WorkoutInvite findPendingInvite(int senderId, int recipientId);
     public boolean updateInviteStatus(WorkoutInvite invite);
+    WorkoutInvite getInviteById(int inviteId);
 }
