@@ -40,22 +40,24 @@ public class UnreadDAO implements UnreadDAOInterface {
         }
     }
 
+    // IMPORTANT: flip messages.read_at for this thread so per-partner dots clear
     @Override
     public void markMessagesRead(int userId, int otherUserId) {
         final String sql = """
-            INSERT INTO message_read_state (user_id, other_user_id, last_read_at)
-            VALUES (?, ?, NOW())
-            ON DUPLICATE KEY UPDATE last_read_at = NOW()
+            UPDATE messages
+            SET read_at = NOW()
+            WHERE receiver_id = ? AND sender_id = ? AND read_at IS NULL
             """;
         try (Connection c = DBConnection.getConnection();
-             PreparedStatement ps = c.prepareStatement(sql)) {
-            ps.setInt(1, userId);
-            ps.setInt(2, otherUserId);
-            ps.executeUpdate();
+            PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, userId);       // the viewer
+            ps.setInt(2, otherUserId);  // the partner
+            ps.executeUpdate();         // row count ignored (interface is void)
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 
     /* ----------------- private counters ----------------- */
 
@@ -85,9 +87,7 @@ public class UnreadDAO implements UnreadDAOInterface {
         return 0;
     }
 
-    // PENDING invites for recipient from either source:
-    //  A) workout_invites.status='pending'
-    //  B) workout_sessions.status='PENDING' addressed to user2 (recipient)
+    // PENDING invites: workout_invites + PENDING sessions addressed to user2
     private int countInvites(int userId) {
         final String sql = """
             SELECT
@@ -198,6 +198,7 @@ public class UnreadDAO implements UnreadDAOInterface {
         return 0;
     }
 
+    // Global "messages" dot: new inbound since last time the section was seen
     private int countMessages(int userId) {
         final String sql = """
             SELECT COUNT(*)
@@ -224,10 +225,9 @@ public class UnreadDAO implements UnreadDAOInterface {
         return 0;
     }
 
-    // in UnreadDAO.java
     @Override
     public List<Map<String, Integer>> getUnreadByPartner(int userId) {
-        String sql = """
+        final String sql = """
             SELECT sender_id AS partner_id, COUNT(*) AS unread
             FROM messages
             WHERE receiver_id = ? AND read_at IS NULL
@@ -235,7 +235,7 @@ public class UnreadDAO implements UnreadDAOInterface {
         """;
         List<Map<String, Integer>> rows = new ArrayList<>();
         try (Connection c = DBConnection.getConnection();
-            PreparedStatement ps = c.prepareStatement(sql)) {
+             PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setInt(1, userId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -245,7 +245,9 @@ public class UnreadDAO implements UnreadDAOInterface {
                     rows.add(row);
                 }
             }
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return rows;
     }
 }
