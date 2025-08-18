@@ -9,4 +9,6 @@ public interface PhotoDAOInterface {
     List<Photo> getPhotosByUserId(int userId);
     Photo getPhotoByPhotoId(int photo);
     boolean deletePhoto(int photoId);
+    int countByUserId(int userId);
+    boolean insertIfUnderLimit(Photo photo, int limit);
 }

@@ -6,6 +6,7 @@ import com.sterling.Interfaces.PhotoDAOInterface;
 import com.sterling.Models.Photo;
 
 public class PhotoService {
+    public static final int MAX_PHOTOS = 6; // Adjust as needed
     private PhotoDAOInterface photoDao;
 
     public PhotoService(PhotoDAOInterface photoDao) {
@@ -26,5 +27,13 @@ public class PhotoService {
 
     public boolean deletePhotoByPhotoId(int photoId) {
         return photoDao.deletePhoto(photoId);
+    }
+
+    public int countByUserId(int userId) {
+        return photoDao.countByUserId(userId);
+    }
+
+    public boolean addPhotoEnforcingLimit(Photo photo) {
+        return photoDao.insertIfUnderLimit(photo, MAX_PHOTOS);
     }
 }

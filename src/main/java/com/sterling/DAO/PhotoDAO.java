@@ -97,4 +97,45 @@ public class PhotoDAO implements PhotoDAOInterface {
         }
         return false;
     }
+
+    // in PhotoDAO
+    @Override
+    public int countByUserId(int userId) {
+        String sql = "SELECT COUNT(*) FROM photos WHERE user_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? rs.getInt(1) : 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    /**
+     * Insert only if current count < limit. Uses INSERT ... SELECT ... WHERE (SELECT COUNT(*)) < ?
+     * Returns true if inserted, false if limit reached.
+     */
+    @Override
+    public boolean insertIfUnderLimit(Photo photo, int limit) {
+        String sql =
+            "INSERT INTO photos (user_id, image_url, uploaded_at) " +
+            "SELECT ?, ?, ? FROM DUAL " +
+            "WHERE (SELECT COUNT(*) FROM photos WHERE user_id = ?) < ?";
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, photo.getUserId());
+            ps.setString(2, photo.getImageUrl());
+            ps.setTimestamp(3, photo.getUploadedAt());
+            ps.setInt(4, photo.getUserId());
+            ps.setInt(5, limit);
+            int rows = ps.executeUpdate();
+            return rows == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

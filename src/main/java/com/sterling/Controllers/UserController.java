@@ -102,6 +102,13 @@ public class UserController {
 
     public void deleteUser(Context ctx){
         int id = Integer.parseInt(ctx.pathParam("id"));
+        int requesterId = ctx.attribute("userId");
+
+        if(requesterId != id) {
+            ctx.status(403).result("Unauthorized to delete another user");
+            return;
+        }
+
         boolean deleted = userService.deleteUser(id);
 
         if(deleted)

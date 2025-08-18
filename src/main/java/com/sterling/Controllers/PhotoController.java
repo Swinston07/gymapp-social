@@ -23,39 +23,51 @@ public class PhotoController {
     public void uploadPhoto(Context ctx) {
         try {
             UploadedFile uploadedFile = ctx.uploadedFile("image");
-            System.out.println("=============================="); 
-            System.out.println("Received file: " + uploadedFile);
-            System.out.println("==============================");
-
-            if(uploadedFile == null) {
-                ctx.status(400).result("No file uploaded");
+            if (uploadedFile == null) {
+                ctx.status(400).json(Map.of("error", "No file uploaded"));
                 return;
             }
 
             int requesterId = ctx.attribute("userId");
             int userId = Integer.parseInt(ctx.pathParam("id"));
-
-            if(userId != requesterId) {
-                ctx.status(403).result("Unauthorized to upload a photo for another user");
+            if (userId != requesterId) {
+                ctx.status(403).json(Map.of("error", "Unauthorized"));
                 return;
             }
 
-            //Upload to cloudianry
+            // Early pre-check to avoid wasting a Cloudinary upload
+            int current = photoService.countByUserId(userId);
+            if (current >= PhotoService.MAX_PHOTOS) {
+                ctx.status(409).json(Map.of("code", "MAX_PHOTOS_REACHED", "message", "You can upload at most 6 photos."));
+                return;
+            }
+
+            // Upload to Cloudinary
             byte[] bytes = uploadedFile.content().readAllBytes();
+            Map uploadResult = com.sterling.Utils.CloudinaryConfig.getCloudinary()
+                    .uploader()
+                    .upload(bytes, ObjectUtils.emptyMap());
 
-            Map uploadedResult = com.sterling.Utils.CloudinaryConfig.getCloudinary().uploader().upload(
-                bytes,
-                ObjectUtils.emptyMap()
-            );
+            String imageUrl = (String) uploadResult.get("secure_url");
+            String publicId = (String) uploadResult.get("public_id"); // use this if we must delete
 
-            String imageUrl = (String) uploadedResult.get("secure_url");
-
-            //Save photo to DB
+            // Final guarded insert (handles race: two uploads at once)
             Photo photo = new Photo();
             photo.setUserId(userId);
             photo.setImageUrl(imageUrl);
             photo.setUploadedAt(Timestamp.from(Instant.now()));
-            photoService.addPhoto(photo);
+
+            boolean inserted = photoService.addPhotoEnforcingLimit(photo);
+            if (!inserted) {
+                // exceeded after upload — clean up the uploaded asset to avoid orphaning
+                try {
+                    com.sterling.Utils.CloudinaryConfig.getCloudinary()
+                        .uploader()
+                        .destroy(publicId, ObjectUtils.emptyMap());
+                } catch (Exception ignore) {}
+                ctx.status(409).json(Map.of("code", "MAX_PHOTOS_REACHED", "message", "You can upload at most 6 photos."));
+                return;
+            }
 
             ctx.status(201).json(Map.of("imageUrl", imageUrl));
         } catch (Exception e) {
@@ -63,6 +75,7 @@ public class PhotoController {
             ctx.status(500).json(Map.of("error", "Upload failed: " + e.getMessage()));
         }
     }
+
 
     public void getPhotosByUserId(Context ctx) {
         try {
