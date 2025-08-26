@@ -1,2 +1,12 @@
-com\sterling\Services\AssignedExerciseServiceTest.class
 com\sterling\Services\AssignedWorkoutServiceTest.class
+com\sterling\Services\GymBuddyServiceTest.class
+com\sterling\Services\UserProgressServiceTest.class
+com\sterling\Services\UserServiceTest.class
+com\sterling\Services\MessageServiceTest.class
+com\sterling\Services\AssignedExerciseServiceTest.class
+com\sterling\Services\ReviewServiceTest.class
+com\sterling\Services\WorkoutSessionServiceTest.class
+com\sterling\Services\PhotoServiceTest.class
+com\sterling\Services\WorkoutInviteServiceTest.class
+com\sterling\Services\BlogPostServiceTest.class
+com\sterling\Services\ExerciseServiceTest.class

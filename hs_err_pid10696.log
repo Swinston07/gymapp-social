@@ -1,0 +1,142 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  EXCEPTION_ACCESS_VIOLATION (0xc0000005) at pc=0x00007ffb755aa49d, pid=10696, tid=9472
+#
+# JRE version: OpenJDK Runtime Environment Temurin-21.0.8+9 (21.0.8+9) (build 21.0.8+9-LTS)
+# Java VM: OpenJDK 64-Bit Server VM Temurin-21.0.8+9 (21.0.8+9-LTS, mixed mode, sharing, tiered, compressed oops, compressed class ptrs, parallel gc, windows-amd64)
+# Problematic frame:
+# V  [jvm.dll+0x5da49d]
+#
+# No core dump will be written. Minidumps are not enabled by default on client versions of Windows
+#
+# If you would like to submit a bug report, please visit:
+#   https://github.com/adoptium/adoptium-support/issues
+#
+
+---------------  S U M M A R Y ------------
+
+Command Line: --add-modules=ALL-SYSTEM --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/sun.nio.fs=ALL-UNNAMED -Declipse.application=org.eclipse.jdt.ls.core.id1 -Dosgi.bundles.defaultStartLevel=4 -Declipse.product=org.eclipse.jdt.ls.core.product -Djava.import.generatesMetadataFilesAtProjectRoot=false -DDetectVMInstallationsJob.disabled=true -Dfile.encoding=utf8 -XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx2G -Xms100m -Xlog:disable -javaagent:c:\Users\sterl\.vscode\extensions\redhat.java-1.44.0-win32-x64\lombok\lombok-1.18.39-4050.jar -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=c:\Users\sterl\AppData\Roaming\Code\User\workspaceStorage\76b817beaaff0acf881965c92f09875f\redhat.java -Daether.dependencyCollector.impl=bf c:\Users\sterl\.vscode\extensions\redhat.java-1.44.0-win32-x64\server\plugins\org.eclipse.equinox.launcher_1.7.0.v20250519-0528.jar -configuration c:\Users\sterl\AppData\Roaming\Code\User\globalStorage\redhat.java\1.44.0\config_win -data c:\Users\sterl\AppData\Roaming\Code\User\workspaceStorage\76b817beaaff0acf881965c92f09875f\redhat.java\jdt_ws --pipe=\\.\pipe\lsp-1435c8bc6a60dde4013989c4d36e70b9-sock
+
+Host: 11th Gen Intel(R) Core(TM) i5-1155G7 @ 2.50GHz, 8 cores, 11G,  Windows 11 , 64 bit Build 26100 (10.0.26100.4768)
+Time: Mon Aug 25 23:26:24 2025 Pacific Daylight Time elapsed time: 40.396071 seconds (0d 0h 0m 40s)
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00000208969ac490):  JavaThread "C2 CompilerThread0" daemon [_thread_in_native, id=9472, stack(0x000000515d500000,0x000000515d600000) (1024K)]
+
+
+Current CompileTask:
+C2:40396 10272 % !   4       org.eclipse.jdt.internal.compiler.parser.Parser::parse @ 542 (922 bytes)
+
+Stack: [0x000000515d500000,0x000000515d600000],  sp=0x000000515d5fc9e0,  free space=1010k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [jvm.dll+0x5da49d]
+V  [jvm.dll+0x5dad75]
+V  [jvm.dll+0x1e0ea1]
+V  [jvm.dll+0x249022]
+V  [jvm.dll+0x2484af]
+V  [jvm.dll+0x1c89ee]
+V  [jvm.dll+0x257d4d]
+V  [jvm.dll+0x2562ea]
+V  [jvm.dll+0x3f2d16]
+V  [jvm.dll+0x857e6b]
+V  [jvm.dll+0x6d0b0d]
+C  [ucrtbase.dll+0x37b0]
+C  [KERNEL32.DLL+0x2e8d7]
+C  [ntdll.dll+0x3c34c]
+
+
+siginfo: EXCEPTION_ACCESS_VIOLATION (0xc0000005), reading address 0x00002208e3966bbc
+
+
+Registers:
+RAX=0x000000515d5fcb20, RBX=0x00000208e181bcd0, RCX=0x000000515d5fccd0, RDX=0x000000515d5fcad0
+RSP=0x000000515d5fc9e0, RBP=0x000000515d5fcb29, RSI=0x00002208e3966b70, RDI=0x000000515d5fccd0
+R8 =0x00002208e3966b70, R9 =0x00000208e181bcd0, R10=0x00000208e3966a80, R11=0x00007ffb75c6d500
+R12=0x00000208e3966a80, R13=0x0000000000000001, R14=0x0000000000000008, R15=0x0000000000000001
+RIP=0x00007ffb755aa49d, EFLAGS=0x0000000000010202
+
+XMM[0]=0x0000000000000000 0x0000000000000000
+XMM[1]=0x0000000000000000 0x0000000000000000
+XMM[2]=0x0000000000000000 0x0000000000000000
+XMM[3]=0x0000000000000000 0x0000000000000000
+XMM[4]=0x0000000000000000 0x0000000000000000
+XMM[5]=0x0000000000000000 0x0000000000000000
+XMM[6]=0x0000000000000000 0x0000000000000000
+XMM[7]=0x0000000000000000 0x0000000000000000
+XMM[8]=0x0000000000000000 0x0000000000000000
+XMM[9]=0x0000000000000000 0x0000000000000000
+XMM[10]=0x0000000000000000 0x0000000000000000
+XMM[11]=0x0000000000000000 0x0000000000000000
+XMM[12]=0x0000000000000000 0x0000000000000000
+XMM[13]=0x0000000000000000 0x0000000000000000
+XMM[14]=0x0000000000000000 0x0000000000000000
+XMM[15]=0x0000000000000000 0x0000000000000000
+  MXCSR=0x00001fa0
+
+
+Register to memory mapping:
+
+RAX=0x000000515d5fcb20 is pointing into the stack for thread: 0x00000208969ac490
+RBX=0x00000208e181bcd0 points into unknown readable memory: 0x000000030000000f | 0f 00 00 00 03 00 00 00
+RCX=0x000000515d5fccd0 is pointing into the stack for thread: 0x00000208969ac490
+RDX=0x000000515d5fcad0 is pointing into the stack for thread: 0x00000208969ac490
+RSP=0x000000515d5fc9e0 is pointing into the stack for thread: 0x00000208969ac490
+RBP=0x000000515d5fcb29 is pointing into the stack for thread: 0x00000208969ac490
+RSI=0x00002208e3966b70 is an unknown value
+RDI=0x000000515d5fccd0 is pointing into the stack for thread: 0x00000208969ac490
+R8 =0x00002208e3966b70 is an unknown value
+R9 =0x00000208e181bcd0 points into unknown readable memory: 0x000000030000000f | 0f 00 00 00 03 00 00 00
+R10=0x00000208e3966a80 points into unknown readable memory: 0x00007ffb759c0a58 | 58 0a 9c 75 fb 7f 00 00
+R11=0x00007ffb75c6d500 jvm.dll
+R12=0x00000208e3966a80 points into unknown readable memory: 0x00007ffb759c0a58 | 58 0a 9c 75 fb 7f 00 00
+R13=0x0000000000000001 is an unknown value
+R14=0x0000000000000008 is an unknown value
+R15=0x0000000000000001 is an unknown value
+
+Top of Stack: (sp=0x000000515d5fc9e0)
+0x000000515d5fc9e0:   0000000000000269 0000020000000000
+0x000000515d5fc9f0:   00000208e181caf0 00007ffb7538e99d
+0x000000515d5fca00:   0000000000000000 0000000000000000
+0x000000515d5fca10:   0000000200000269 0000000300000003
+0x000000515d5fca20:   00000208df68d1a0 00000208e181c9c0
+0x000000515d5fca30:   00000208e181c9b0 000000515d5fcb29
+0x000000515d5fca40:   00000000000002e5 0000000000000004
+0x000000515d5fca50:   00000208e39667b0 000000515d5fccd0
+0x000000515d5fca60:   0000000000000008 0000000000000001
+0x000000515d5fca70:   00002208e3966b70 000000515d5fcb29
+0x000000515d5fca80:   00000208e181bcd0 00007ffb755aad75
+0x000000515d5fca90:   000000515d5fccd0 000000515d5fcad0
+0x000000515d5fcaa0:   00002208e3966b70 000000515d5fcb29
+0x000000515d5fcab0:   000000515d5fcb20 00007ffb756efcbe
+0x000000515d5fcac0:   0000000000000008 00000208969b0510
+0x000000515d5fcad0:   0000020800000008 00000208969ab010
+0x000000515d5fcae0:   00000208e1819fb8 00007ffb00000000
+0x000000515d5fcaf0:   00000208dfd72bb0 00000208969ab010
+0x000000515d5fcb00:   00000208e0dbcfe0 00000000000d3fb0
+0x000000515d5fcb10:   00000208e0dc24b8 00000208e0dc4fc8
+0x000000515d5fcb20:   0000020800000010 00000208e181c970
+0x000000515d5fcb30:   0000000000000010 00000208969ab010
+0x000000515d5fcb40:   0000000000033e80 00000208e04ab9b0
+0x000000515d5fcb50:   000000515d5fd0e0 0000000000000001
+0x000000515d5fcb60:   00000208e04ab9c0 00000000000003d8
+0x000000515d5fcb70:   00000208e04abd98 000000515d5fd000
+0x000000515d5fcb80:   000000515d5fcc90 00007ffb751b0ea1
+0x000000515d5fcb90:   0000005100000131 0000005100000001
+0x000000515d5fcba0:   00000208e181bcd0 00000208969b04c0
+0x000000515d5fcbb0:   0000000000000000 0000000000000000
+0x000000515d5fcbc0:   0000000000000007 00000208e04ab9b0
+0x000000515d5fcbd0:   00000208df689f90 00000208df68d2a0 
+
+Instructions: (pc=0x00007ffb755aa49d)
+0x00007ffb755aa39d:   00 48 8d 15 0b 7d 49 00 49 8b cd e8 83 ea d2 ff
+0x00007ffb755aa3ad:   48 8d 4c 24 50 e8 39 8c 0f 00 48 83 3e 00 74 15
+0x00007ffb755aa3bd:   48 8b 54 24 40 48 8b cf e8 86 bb ae ff 48 8b ce
+0x00007ffb755aa3cd:   e8 5e bb ae ff 4c 39 7f 18 74 0c 48 89 77 10 4c
+0x00007ffb755aa3dd:   89 7f 18 4c 89 67 20 48 8b 8c 24 d0 00 00 00 48
+0x00007ffb755aa3ed:   33 cc e8 dc 2b 37 00 48 81 c4 e8 00 00 00 41 5f
+0x00007ffb755aa3fd:   41 5e 41 5d 41 5c 5f 5e 5d 5b c3 cc cc cc cc cc
+0x00007ffb755aa40d:   cc cc cc 48 8b 12 e9 38 1a df ff cc cc cc cc cc
+0x00007ffb755aa41d:   cc cc cc 48 89 5c 24 08 48 89 6c 24 10 48 89 74
+0x00007ffb755aa42d:   24 18 57 48 83 ec 20 48 8b da 49 8b f1 
