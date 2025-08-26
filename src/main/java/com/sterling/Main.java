@@ -51,6 +51,9 @@ public class Main {
         if (envPort != null && !envPort.isBlank()) {
             try { port = Integer.parseInt(envPort); } catch (NumberFormatException ignored) {}
         }
+
+        System.out.println("Booting API with PORT env=" + System.getenv("PORT") + " -> using port=" + port);
+
         app.start(port);
     }
 }
