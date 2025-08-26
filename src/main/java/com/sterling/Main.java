@@ -46,6 +46,11 @@ public class Main {
         RouteConfig.registerRoutes(app, beans);
 
         // Start app
-        app.start(7000);
+        int port = 7000;
+        String envPort = System.getenv("PORT");
+        if (envPort != null && !envPort.isBlank()) {
+            try { port = Integer.parseInt(envPort); } catch (NumberFormatException ignored) {}
+        }
+        app.start(port);
     }
 }
