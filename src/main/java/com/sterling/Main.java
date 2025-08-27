@@ -32,8 +32,22 @@ public class Main {
 
     public static void main(String[] args) {
 
-        // Create and configure app
-        Javalin app = Javalin.create();
+        // Create and configure app (explicit UTF-8)
+        Javalin app = Javalin.create(cfg -> {
+            cfg.http.defaultContentType = "application/json; charset=UTF-8";
+        });
+
+        // Force UTF-8 for inbound/outbound (defensive)
+        app.before(ctx -> {
+            try { ctx.req().setCharacterEncoding("UTF-8"); } catch (Exception ignored) {}
+        });
+        app.after(ctx -> {
+            ctx.res().setCharacterEncoding("UTF-8");
+            // keep content type explicit in case handlers set plain json
+            if (ctx.res().getContentType() == null) {
+                ctx.contentType("application/json; charset=UTF-8");
+            }
+        });
 
         // Apply security (CORS + protectRoute for JWT)
         SecurityConfig.applySecurity(app);
