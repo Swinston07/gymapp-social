@@ -49,25 +49,6 @@ public class Main {
             }
         });
 
-        // --- DIAGNOSTICS ---
-        app.get("/_encoding", ctx -> {
-            String enc = System.getProperty("file.encoding");
-            String def = java.nio.charset.Charset.defaultCharset().name();
-            ctx.contentType("application/json; charset=UTF-8");
-            ctx.json(Map.of("file.encoding", enc, "defaultCharset", def));
-        });
-
-        app.get("/_emoji-json", ctx -> {
-            ctx.contentType("application/json; charset=UTF-8");
-            ctx.json(java.util.List.of("🏋️ Trainer", "💪 Very Active", "🔥 Three+/Week", "🏆 Pro", "✅ Working"));
-        });
-
-        app.get("/_emoji-text", ctx -> {
-            ctx.contentType("text/plain; charset=UTF-8");
-            ctx.result("Plain text → 🏋️ 💪 🔥 🏆 ✅");
-        });
-
-
         // Apply security (CORS + protectRoute for JWT)
         SecurityConfig.applySecurity(app);
 
@@ -85,8 +66,7 @@ public class Main {
             try { port = Integer.parseInt(envPort); } catch (NumberFormatException ignored) {}
         }
 
-        System.out.println("========================== [ENC] file.encoding=" + System.getProperty("file.encoding")
-        + " defaultCharset=" + java.nio.charset.Charset.defaultCharset().name() + " ==========================");
+        System.out.println("Booting API with PORT env=" + System.getenv("PORT") + " -> using port=" + port);
 
         app.start(port);
     }
