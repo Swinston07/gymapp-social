@@ -9,14 +9,22 @@ import java.time.Instant;
 import java.util.Date;
 
 public final class JwtUtil {
+    // ====== CONFIG ======
+    // Access token lifetime (currently 24 hours). Adjust as needed during beta.
+    private static final long EXPIRATION_MS = 1000L * 60 * 60 * 24; // 24 hour
+    // Small tolerance for device/server clock differences.
+    private static final long ALLOWED_SKEW_SECONDS = 60; // 60s
+
     private static final String SECRET;
-    private static final long   EXPIRATION_MS = 1000L * 60 * 60; // 1 hour (adjust as needed)
 
     static {
         String s = System.getenv("JWT_SECRET");
         if (s == null || s.isBlank()) {
             try {
-                var d = io.github.cdimascio.dotenv.Dotenv.configure().ignoreIfMissing().load();
+                var d = io.github.cdimascio.dotenv.Dotenv
+                        .configure()
+                        .ignoreIfMissing()
+                        .load();
                 s = d.get("JWT_SECRET");
             } catch (Exception ignored) {}
         }
@@ -29,6 +37,8 @@ public final class JwtUtil {
         SECRET = s;
     }
 
+    private JwtUtil() {}
+
     private static SecretKey key() {
         return Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
     }
@@ -39,16 +49,23 @@ public final class JwtUtil {
                 .setSubject(String.valueOf(userId))
                 .setIssuedAt(Date.from(now))
                 .setExpiration(Date.from(now.plusMillis(EXPIRATION_MS)))
-                .signWith(key())
+                .signWith(key(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-
-    public static int validateTokenAndGetUserId(String token) {
+    /**
+     * Validates the token signature, expiry, etc., and returns the user id (subject).
+     * @throws ExpiredJwtException if the token is expired
+     * @throws JwtException for any other parsing/signature errors
+     */
+    public static int validateTokenAndGetUserId(String token)
+            throws ExpiredJwtException, JwtException {
         Jws<Claims> claims = Jwts.parserBuilder()
                 .setSigningKey(key())
+                .setAllowedClockSkewSeconds(ALLOWED_SKEW_SECONDS)
                 .build()
                 .parseClaimsJws(token);
+
         return Integer.parseInt(claims.getBody().getSubject());
     }
 }
